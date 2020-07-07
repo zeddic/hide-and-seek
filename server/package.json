@@ -1,5 +1,5 @@
 {
-  "name": "lancer-game-server",
+  "name": "lancer-server",
   "version": "1.0.0",
   "description": "Webserver for a simple socket.io game",
   "main": "src/server.ts",

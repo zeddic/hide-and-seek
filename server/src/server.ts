@@ -2,6 +2,7 @@ import * as express from 'express';
 import * as socketIo from 'socket.io';
 import {createServer, Server} from 'http';
 import {Socket} from 'socket.io';
+import {ChatMessage, MessageType} from 'lancer-shared/net/messages';
 var cors = require('cors');
 
 // Using following tutorial as a base:
@@ -50,16 +51,6 @@ export class GameServer {
   get app(): express.Application {
     return this._app;
   }
-}
-
-export enum MessageType {
-  CONNECT = 'connect',
-  DISCONNECT = 'disconnect',
-  MESSAGE = 'message',
-}
-
-interface ChatMessage {
-  message: string;
 }
 
 const game = new GameServer();

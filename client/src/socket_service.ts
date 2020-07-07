@@ -1,5 +1,6 @@
 import io from 'socket.io-client';
 import {fromEvent, Observable} from 'rxjs';
+import {ChatMessage} from 'lancer-shared/net/messages';
 
 export class SocketService {
   private socket: SocketIOClient.Socket = {} as SocketIOClient.Socket;
@@ -27,12 +28,12 @@ export class SocketService {
   }
 }
 
-export enum MessageType {
-  CONNECT = 'connect',
-  DISCONNECT = 'disconnect',
-  MESSAGE = 'message',
-}
+// export enum MessageType {
+//   CONNECT = 'connect',
+//   DISCONNECT = 'disconnect',
+//   MESSAGE = 'message',
+// }
 
-interface ChatMessage {
-  message: string;
-}
+// interface ChatMessage {
+//   message: string;
+// }
