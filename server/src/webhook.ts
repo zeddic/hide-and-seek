@@ -45,3 +45,5 @@ function exec(command: string) {
   console.log(`> ${command}`);
   shell.exec(command);
 }
+
+console.log(`Webhook running on port ${PORT}...`);
