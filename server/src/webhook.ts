@@ -28,6 +28,7 @@ handler.on('push', function (event) {
   console.log('Received a Push Request for %s to %s', repository, ref);
 
   if (repository === REPO_NAME) {
+    console.log('about to execute commands!');
     shell.cd('~/lancer');
     shell.exec('git pull');
     shell.exec('yarn install --production');
