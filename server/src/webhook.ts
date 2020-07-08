@@ -28,18 +28,18 @@ handler.on('push', function (event) {
   console.log('Received a Push Request for %s to %s', repository, ref);
 
   if (repository === REPO_NAME) {
-    exec('cd ~/lancer');
+    shell.cd('~/lancer');
     exec('git pull');
     exec('yarn install --production');
 
     // Build client
-    exec('cd ./client');
+    shell.cd('client');
     exec('yarn run build');
     exec('cp -r build/ ~/public_html/lancer');
-    exec('cd ../');
+    shell.cd('../');
 
     // Build server
-    exec('cd server');
+    shell.cd('server');
     exec('yarn run build');
 
     // Restart server
