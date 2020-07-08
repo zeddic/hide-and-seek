@@ -1,5 +1,5 @@
 # Builds the site and deploys it.
-name: Build and Deploy
+name: Build
 
 # Triggers the workflow on push for the master branch
 on:
@@ -21,13 +21,16 @@ jobs:
         run: yarn install
         working-directory: server
 
-      - name: build
+      - name: build server
         run: yarn run build
         working-directory: server
 
-      - name: verify built output
+      - name: verify server built output
         run: find server/dist/ -print
 
-      - name: deploy
-        run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+      - name: build client
+        run: yarn run build
+        working-directory: client
+
+      - name: verify server built output
+        run: find server/build/ -print

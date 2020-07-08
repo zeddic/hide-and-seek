@@ -31,13 +31,24 @@ handler.on('push', function (event) {
     exec('cd ~/lancer');
     exec('git pull');
     exec('yarn install --production');
+
+    // Build client
+    exec('cd client');
+    exec('yarn run build');
+    exec('cp -r build/ ~/public_html/lancer');
+    exec('../');
+
+    // Build server
     exec('cd server');
     exec('yarn run build');
-    exec('pm2 restart lancer');
-    exec('pm2 restart lancer-webhook');
 
-    // assumes initially started as:
-    //  pm2 start dist/server.js --name lancer
+    // Restart server
+    // Assumes initially started as:
+    // pm2 start dist/server.js --name lancer
+    exec('pm2 restart lancer');
+
+    // Restart webhook (must go last!)
+    exec('pm2 restart lancer-webhook');
   }
 });
 
