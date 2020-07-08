@@ -28,14 +28,20 @@ handler.on('push', function (event) {
   console.log('Received a Push Request for %s to %s', repository, ref);
 
   if (repository === REPO_NAME) {
-    shell.cd('~/lancer');
-    shell.exec('git pull');
-    shell.exec('yarn install --production');
-    shell.cd('server');
-    shell.exec('yarn run build');
-    shell.exec('pm2 restart lancer');
+    exec('cd ~/lancer');
+    exec('git pull');
+    exec('yarn install --production');
+    exec('cd server');
+    exec('yarn run build');
+    exec('pm2 restart lancer');
+    exec('pm2 restart lancer-webhook');
 
     // assumes initially started as:
     //  pm2 start dist/server.js --name lancer
   }
 });
+
+function exec(command: string) {
+  console.log(`> ${command}`);
+  shell.exec(command);
+}
