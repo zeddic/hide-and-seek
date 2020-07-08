@@ -12,12 +12,15 @@
   "license": "ISC",
   "dependencies": {
     "@types/express": "^4.17.7",
+    "@types/shelljs": "^0.8.8",
     "@types/socket.io": "^2.1.8",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "github-webhook-handler": "^1.0.0",
+    "lancer-shared": "1.0.0",
+    "shelljs": "^0.8.4",
     "socket.io": "^2.3.0",
-    "typescript": "^3.9.6",
-    "lancer-shared": "1.0.0"
+    "typescript": "^3.9.6"
   },
   "devDependencies": {
     "ts-node-dev": "^1.0.0-pre.50"
