@@ -9,3 +9,4 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
+console.log(process.env.NODE_ENV);

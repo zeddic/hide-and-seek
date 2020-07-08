@@ -1,19 +1,22 @@
 import io from 'socket.io-client';
 import {fromEvent, Observable} from 'rxjs';
 import {ChatMessage} from 'lancer-shared/lib/messages';
+import {inProd} from './env';
+
+const DEV_SERVER = 'localhost:8080';
+const PROD_SERVER = 'zeddic.com:8080';
+const SERVER = inProd() ? PROD_SERVER : DEV_SERVER;
 
 export class SocketService {
   private socket: SocketIOClient.Socket = {} as SocketIOClient.Socket;
 
   public init(): SocketService {
-    console.log('initiating socket service');
-    this.socket = io('zeddic.com:8080');
+    this.socket = io(SERVER);
     return this;
   }
 
   // send a message for the server to broadcast
   public send(message: ChatMessage): void {
-    console.log('emitting message: ' + message);
     this.socket.emit('message', message);
   }
 
@@ -27,13 +30,3 @@ export class SocketService {
     this.socket.disconnect();
   }
 }
-
-// export enum MessageType {
-//   CONNECT = 'connect',
-//   DISCONNECT = 'disconnect',
-//   MESSAGE = 'message',
-// }
-
-// interface ChatMessage {
-//   message: string;
-// }
