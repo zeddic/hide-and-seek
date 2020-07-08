@@ -3,14 +3,13 @@
     "module": "commonjs",
     "esModuleInterop": false,
     "target": "es6",
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",
-    "baseUrl": ".",
-    "paths": {
-      "*": ["node_modules/", "src/types/*"]
-    }
+    "skipLibCheck": true,
+    "baseUrl": "."
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "references": [{"path": "../shared"}]
 }

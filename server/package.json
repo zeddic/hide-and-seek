@@ -5,7 +5,7 @@
   "main": "src/server.ts",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts",
-    "prod": "tsc && node ./dist/server.js"
+    "prod": "tsc --build && node ./dist/server.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,7 +15,8 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "socket.io": "^2.3.0",
-    "typescript": "^3.9.6"
+    "typescript": "^3.9.6",
+    "lancer-shared": "1.0.0"
   },
   "devDependencies": {
     "ts-node-dev": "^1.0.0-pre.50"

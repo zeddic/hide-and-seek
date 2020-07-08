@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as socketIo from 'socket.io';
 import {createServer, Server} from 'http';
 import {Socket} from 'socket.io';
-import {ChatMessage, MessageType} from 'lancer-shared/net/messages';
+import {ChatMessage, MessageType} from 'lancer-shared/lib/messages';
 var cors = require('cors');
 
 // Using following tutorial as a base:
@@ -38,6 +38,8 @@ export class GameServer {
       console.log('Connected client on port %s.', this.port);
 
       socket.on(MessageType.MESSAGE, (m: ChatMessage) => {
+        console.log(m.message);
+
         console.log('[server](message): %s', JSON.stringify(m));
         this.io.emit('message', m);
       });

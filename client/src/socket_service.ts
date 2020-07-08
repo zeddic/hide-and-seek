@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 import {fromEvent, Observable} from 'rxjs';
-import {ChatMessage} from 'lancer-shared/net/messages';
+import {ChatMessage} from 'lancer-shared/lib/messages';
 
 export class SocketService {
   private socket: SocketIOClient.Socket = {} as SocketIOClient.Socket;

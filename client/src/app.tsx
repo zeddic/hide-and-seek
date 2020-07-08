@@ -1,7 +1,7 @@
 import React, {useEffect, useState, SyntheticEvent, ChangeEvent} from 'react';
 import './app.css';
 import {SocketService} from './socket_service';
-import {ChatMessage} from 'lancer-shared/net/messages';
+import {ChatMessage} from 'lancer-shared/lib/messages';
 
 const service = new SocketService();
 

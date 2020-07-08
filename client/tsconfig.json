@@ -16,5 +16,6 @@
     "jsx": "react",
     "baseUrl": "."
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "references": [{"path": "../shared"}]
 }
