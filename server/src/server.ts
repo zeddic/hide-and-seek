@@ -32,7 +32,7 @@ export class GameServer {
   private listen(): void {
     this.server.listen(this.port, () => {
       console.log('Running server on port %s', this.port);
-      console.log('Yay!');
+      console.log('Yay');
     });
 
     this.io.on(MessageType.CONNECT, (socket: Socket) => {
