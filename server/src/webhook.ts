@@ -3,7 +3,7 @@ import * as shell from 'shelljs';
 const createHandler = require('github-webhook-handler');
 
 const {WEBHOOK_SECRET} = process.env;
-const REPO_NAME = 'my_repo';
+const REPO_NAME = 'lancer';
 const PORT = process.env.PORT || 6767;
 
 const handler = createHandler({path: '/', secret: WEBHOOK_SECRET});
@@ -30,7 +30,7 @@ handler.on('push', function (event) {
   if (repository === REPO_NAME) {
     shell.cd('~/lancer');
     shell.exec('git pull');
-    shell.exec('yarn install production');
+    shell.exec('yarn install --production');
     shell.cd('server');
     shell.exec('yarn run build');
     shell.exec('pm2 restart lancer');
