@@ -21,13 +21,13 @@ handler.on('error', function (err) {
   console.error('Error:', err.message);
 });
 
-handler.on('pull_request', function (event) {
+handler.on('push', function (event) {
   const repository = event.payload.repository.name;
-  const action = event.payload.action;
+  const ref = event.payload.ref;
 
-  console.log('Received a Pull Request for %s to %s', repository, action);
+  console.log('Received a Push Request for %s to %s', repository, ref);
 
-  if (repository === REPO_NAME && action === 'closed') {
+  if (repository === REPO_NAME) {
     shell.cd('~/lancer');
     shell.exec('git pull');
     shell.exec('yarn install production');
