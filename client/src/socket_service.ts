@@ -7,7 +7,7 @@ export class SocketService {
 
   public init(): SocketService {
     console.log('initiating socket service');
-    this.socket = io('localhost:8080');
+    this.socket = io('zeddic.com:8080');
     return this;
   }
 
