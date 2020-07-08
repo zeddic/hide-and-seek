@@ -35,7 +35,7 @@ handler.on('push', function (event) {
     // Build client
     shell.cd('client');
     exec('yarn run build');
-    exec('cp -r build/ ~/public_html/lancer');
+    exec('cp -r build/. ~/public_html/lancer');
     shell.cd('../');
 
     // Build server
