@@ -5,7 +5,8 @@
   "main": "src/server.ts",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts",
-    "prod": "tsc --build && node ./dist/server.js"
+    "prod": "tsc --build && node ./dist/server.js",
+    "build": "tsc --build"
   },
   "author": "",
   "license": "ISC",
