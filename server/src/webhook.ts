@@ -33,10 +33,10 @@ handler.on('push', function (event) {
     exec('yarn install --production');
 
     // Build client
-    exec('cd client');
+    exec('cd ./client');
     exec('yarn run build');
     exec('cp -r build/ ~/public_html/lancer');
-    exec('../');
+    exec('cd ../');
 
     // Build server
     exec('cd server');
