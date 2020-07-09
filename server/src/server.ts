@@ -105,12 +105,11 @@ export class GameServer {
           player.x = msg.x;
           player.y = msg.y;
         }
-        console.log(`Player ${id} moved to ${player.x}, ${player.y}`);
+        // console.log(`Player ${id} moved to ${player.x}, ${player.y}`);
       });
     });
 
     setInterval(() => {
-      console.log('sending update');
       const msg: StateUpdateMessage = {players};
       this.io.emit(MessageType.STATE_UPDATE, msg);
     }, 1000 / 60);
