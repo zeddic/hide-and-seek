@@ -1,9 +1,11 @@
 import * as express from 'express';
 import * as socketIo from 'socket.io';
 import {createServer, Server} from 'http';
+import * as https from 'https';
 import {Socket} from 'socket.io';
 import {ChatMessage, MessageType} from 'lancer-shared/lib/messages';
 var cors = require('cors');
+import * as fs from 'fs';
 
 // Using following tutorial as a base:
 // https://medium.com/@rossbulat/typescript-live-chat-express-and-socket-io-server-setup-8d24fe13d00
@@ -11,7 +13,8 @@ var cors = require('cors');
 export class GameServer {
   private static readonly DEFAULT_PORT: number = 8080;
   private _app: express.Application;
-  private server: Server;
+  private httpServer: Server;
+  private httpsServer: https.Server;
   private io: SocketIO.Server;
   private port: string | number;
 
@@ -20,18 +23,42 @@ export class GameServer {
     this.port = process.env.PORT || GameServer.DEFAULT_PORT;
     this._app.use(cors());
     this._app.options('*', cors());
-    this.server = createServer(this._app);
+    this.httpServer = createServer(this._app);
+
+    this.httpsServer = https.createServer(
+      {
+        key: fs.readFileSync(
+          '~/ssl/keys/96c96_27b17_c5f2e798fa024731d30821f3a4b385a0.key'
+        ),
+        cert: fs.readFileSync(
+          '~/ssl/certs/zeddic_com_cf569_cdd8f_1597103999_6f9cf0bc0e928208b689524b1aa9d382.crt'
+        ),
+        // ca: fs.readFileSync('./test_ca.crt'),
+        requestCert: false,
+        rejectUnauthorized: false,
+      },
+      this._app
+    );
+
+    // this.httpServer.listen(8080);
+
     this.initSocket();
     this.listen();
   }
 
   private initSocket(): void {
-    this.io = socketIo(this.server);
+    this.io = socketIo();
+    this.io.attach(this.httpServer);
+    this.io.attach(this.httpsServer);
   }
 
   private listen(): void {
-    this.server.listen(this.port, () => {
-      console.log('Running server on port %s', this.port);
+    this.httpServer.listen(this.port, () => {
+      console.log('Running http server on port %s', this.port);
+    });
+
+    this.httpsServer.listen(8081, () => {
+      console.log('Running https sever on port 8081');
     });
 
     this.io.on(MessageType.CONNECT, (socket: Socket) => {
