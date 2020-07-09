@@ -28,10 +28,10 @@ export class GameServer {
     this.httpsServer = https.createServer(
       {
         key: fs.readFileSync(
-          '~/ssl/keys/96c96_27b17_c5f2e798fa024731d30821f3a4b385a0.key'
+          '/home/zeddic/ssl/keys/cf569_cdd8f_3372f3a301d3f50fcc111c6fad231e6c.key'
         ),
         cert: fs.readFileSync(
-          '~/ssl/certs/zeddic_com_cf569_cdd8f_1597103999_6f9cf0bc0e928208b689524b1aa9d382.crt'
+          '/home/zeddic/ssl/certs/zeddic_com_cf569_cdd8f_1597103999_6f9cf0bc0e928208b689524b1aa9d382.crt'
         ),
         // ca: fs.readFileSync('./test_ca.crt'),
         requestCert: false,
