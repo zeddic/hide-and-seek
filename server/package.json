@@ -4,7 +4,7 @@
   "description": "Webserver for a simple socket.io game",
   "main": "src/server.ts",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts",
+    "dev": "ts-node-dev --respawn  ./src/server.ts",
     "prod": "tsc --build && node ./dist/server.js",
     "build": "tsc --build"
   },

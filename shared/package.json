@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "dependencies": {
     "typescript": "^3.9.6"
+  },
+  "scripts": {
+    "build": "tsc --build"
   }
 }
