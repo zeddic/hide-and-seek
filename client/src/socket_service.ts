@@ -11,6 +11,9 @@ const PROD_PORT =
   location.protocol === 'https:' ? PROD_PORT_HTTPS : PROD_PORT_HTTP;
 const PROD_SERVER = `zeddic.com:${PROD_PORT}`;
 
+console.log(PROD_PORT);
+console.log(PROD_SERVER);
+
 const SERVER = inProd() ? PROD_SERVER : DEV_SERVER;
 
 export class SocketService {
