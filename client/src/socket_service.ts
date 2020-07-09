@@ -4,7 +4,7 @@ import {ChatMessage} from 'lancer-shared/lib/messages';
 import {inProd} from './env';
 
 const DEV_SERVER = 'http://localhost:8080';
-const PROD_SERVER = 'http://zeddic.com:8080';
+const PROD_SERVER = 'zeddic.com:8080';
 const SERVER = inProd() ? PROD_SERVER : DEV_SERVER;
 
 export class SocketService {
