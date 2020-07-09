@@ -20,12 +20,14 @@ function App() {
     });
 
     service.onStateUpdate().subscribe(data => {
+      console.log('got state!');
       setState(data.players);
     });
 
     sendMove
       .pipe(throttleTime(16, undefined, {leading: true, trailing: true}))
       .subscribe(msg => {
+        console.log('sending move!');
         service.sendMove(msg);
       });
 

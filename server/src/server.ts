@@ -22,6 +22,10 @@ const HTTPS_PRIVATE_KEY =
 const HTTPS_CERT =
   '/home/zeddic/ssl/certs/zeddic_com_cf569_cdd8f_1597103999_6f9cf0bc0e928208b689524b1aa9d382.crt';
 
+console.log('====================');
+console.log(`Prod: ${inProd}`);
+console.log('====================');
+
 export class GameServer {
   private static readonly DEFAULT_PORT: number = 8080;
   private _app: express.Application;
@@ -101,11 +105,12 @@ export class GameServer {
           player.x = msg.x;
           player.y = msg.y;
         }
-        // console.log(`Player ${id} moved to ${player.x}, ${player.y}`);
+        console.log(`Player ${id} moved to ${player.x}, ${player.y}`);
       });
     });
 
     setInterval(() => {
+      console.log('sending update');
       const msg: StateUpdateMessage = {players};
       this.io.emit(MessageType.STATE_UPDATE, msg);
     }, 1000 / 60);
