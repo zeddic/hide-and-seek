@@ -8,7 +8,7 @@ const DEV_SERVER = 'http://localhost:8080';
 const PROD_PORT_HTTP = '8080';
 const PROD_PORT_HTTPS = '8081';
 const PROD_PORT =
-  location.protocol === 'https:' ? PROD_PORT_HTTPS : PROD_PORT_HTTP;
+  window.location.protocol === 'https:' ? PROD_PORT_HTTPS : PROD_PORT_HTTP;
 const PROD_SERVER = `zeddic.com:${PROD_PORT}`;
 
 console.log(PROD_PORT);
