@@ -1,10 +1,14 @@
 {
   "name": "lancer-shared",
   "version": "1.0.0",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "dependencies": {
+    "ecsy": "^0.3.1",
     "typescript": "^3.9.6"
   },
   "scripts": {
-    "build": "tsc --build"
+    "build": "tsc --build",
+    "dev": "tsc --build --watch"
   }
 }

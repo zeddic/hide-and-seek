@@ -5,7 +5,7 @@
   "main": "src/server.ts",
   "scripts": {
     "dev": "ts-node-dev --respawn  ./src/server.ts",
-    "prod": "tsc --build && node ./dist/server.js",
+    "prod": "tsc --build && node ./build/server.js",
     "build": "tsc --build"
   },
   "author": "",
@@ -15,6 +15,7 @@
     "@types/shelljs": "^0.8.8",
     "@types/socket.io": "^2.1.8",
     "cors": "^2.8.5",
+    "ecsy": "^0.3.1",
     "express": "^4.17.1",
     "github-webhook-handler": "^1.0.0",
     "lancer-shared": "1.0.0",

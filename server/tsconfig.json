@@ -5,8 +5,8 @@
     "target": "es6",
     "noImplicitAny": false,
     "moduleResolution": "node",
-    "sourceMap": true,
-    "outDir": "dist",
+    "sourceMap": false,
+    "outDir": "build",
     "skipLibCheck": true,
     "baseUrl": "."
   },

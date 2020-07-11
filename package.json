@@ -1,6 +1,10 @@
 {
   "private": true,
   "workspaces": {
-    "packages": ["client", "server", "shared"]
+    "packages": [
+      "client",
+      "server",
+      "shared"
+    ]
   }
 }

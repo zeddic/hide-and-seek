@@ -10,6 +10,8 @@ import {
   StateUpdateMessage,
   Player,
 } from 'lancer-shared/lib/messages';
+
+// import * as blah from 'lancer-shared';
 var cors = require('cors');
 import * as fs from 'fs';
 import {inProd} from './env';
@@ -23,7 +25,7 @@ const HTTPS_CERT =
   '/home/zeddic/ssl/certs/zeddic_com_cf569_cdd8f_1597103999_6f9cf0bc0e928208b689524b1aa9d382.crt';
 
 console.log('====================');
-console.log(`Prod: ${inProd}`);
+console.log(`Prod: ${inProd()}`);
 console.log('====================');
 
 export class GameServer {
