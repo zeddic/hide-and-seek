@@ -11,7 +11,7 @@ function App() {
   // when it is unmounted.
   useEffect(() => {
     const game = new Game(containerEl.current!);
-    game.startGameLoop();
+    game.setup();
 
     return () => {
       game.destroy();
