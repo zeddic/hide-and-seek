@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import './app.css';
-import {Game} from './game/game';
+import {ClientGame} from './game/client_game';
 
 // const service = new SocketService();
 
@@ -10,7 +10,7 @@ function App() {
   // Create the game when the component is mounted and destroy it
   // when it is unmounted.
   useEffect(() => {
-    const game = new Game(containerEl.current!);
+    const game = new ClientGame(containerEl.current!);
     game.setup();
 
     return () => {

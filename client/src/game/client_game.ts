@@ -1,12 +1,10 @@
+import * as ecsy from 'ecsy';
+import {Movement} from 'lancer-shared/lib/game/movement_component';
+import {Position} from 'lancer-shared/lib/game/position_component';
 import * as PIXI from 'pixi.js';
 import Stats from 'stats.js';
-import * as ecsy from 'ecsy';
-import {Position} from 'lancer-shared/lib/game/position_component';
-import {Movement} from 'lancer-shared/lib/game/movement_component';
+import {ClientNetworkSystem} from './client_network_system';
 import {RenderSystem} from './render_system';
-import {randomInt, randomValue} from 'lancer-shared/lib/util/random';
-import {PhysicsSystem} from 'lancer-shared/lib/game/physics_system';
-import {Vector} from 'lancer-shared/lib/util/vector';
 
 /**
  * The number of milliseconds that should be simulated in each update
@@ -19,7 +17,12 @@ const FIXED_UPDATE_STEP_MS = 1000 / 60;
  */
 const MAX_UPDATES_PER_TICK = 10;
 
-export class Game {
+/**
+ * The game simulation run on the client.
+ *
+ * Note that the game run on the server is considered the source of truth.
+ */
+export class ClientGame {
   private stats: Stats;
   private graphics: PIXI.Graphics;
   private renderer: PIXI.Renderer;
@@ -60,34 +63,9 @@ export class Game {
     this.world
       .registerComponent(Position)
       .registerComponent(Movement)
-      .registerSystem(PhysicsSystem)
+      // .registerSystem(PhysicsSystem)
+      .registerSystem(ClientNetworkSystem)
       .registerSystem(RenderSystem, {graphics: this.graphics});
-
-    for (let i = 0; i < 100; i++) {
-      const a = new Vector(
-        randomValue(-0.001, 0.001),
-        randomValue(-0.001, 0.001)
-      );
-      const v = new Vector(randomValue(-0.1, 0.1), randomValue(-0.1, 0.1));
-      // console.log(a);
-      // console.log(v);
-      this.world
-        .createEntity()
-        // .addComponent(Movement, {
-        //   a: new Vector(randomValue(-1, 1), randomValue(-1, 1)),
-        //   v: new Vector(randomValue(-1, 1), randomValue(-1, 1)),
-        // })
-        .addComponent(Movement, {
-          a,
-          v,
-          x: randomInt(40, 200),
-          y: randomInt(40, 200),
-        })
-        .addComponent(Position, {
-          x: randomInt(40, 200),
-          y: randomInt(40, 200),
-        });
-    }
 
     this.startGameLoop();
   }

@@ -12,12 +12,6 @@ export class Movement extends Component<PropsOf<Movement>> {
   /** Aceleration */
   a!: Vector;
 
-  // constructor(blah) {
-  //   console.log('here!');
-  //   console.log(blah);
-  //   super(blah);
-  // }
-
   static schema = {
     v: {type: CustomTypes.Vector, default: new Vector(0, 0)},
     a: {type: CustomTypes.Vector, default: new Vector(0, 0)},

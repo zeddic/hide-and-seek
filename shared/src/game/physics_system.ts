@@ -14,12 +14,6 @@ export class PhysicsSystem extends System {
       const p = entity.getComponent(Position);
       const m = entity.getComponent(Movement);
 
-      // console.log(p);
-      // if (!m.a) {
-      //   // console.log(m);
-      //   console.log('no');
-      // }
-
       // Update velocity
       m.v.x += m.a.x * delta;
       m.v.y += m.a.y * delta;

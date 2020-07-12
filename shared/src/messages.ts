@@ -16,11 +16,19 @@ export interface MoveMessage {
 }
 
 export interface StateUpdateMessage {
-  players: Player[];
+  updates: EntityUpdate[];
 }
 
-export interface Player {
+export interface EntityUpdate {
+  id: number;
   x: number;
   y: number;
-  id: string;
+  v: {
+    x: number;
+    y: number;
+  };
+  a: {
+    x: number;
+    y: number;
+  };
 }

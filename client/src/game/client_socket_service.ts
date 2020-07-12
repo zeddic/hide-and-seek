@@ -6,7 +6,7 @@ import {
   MessageType,
   MoveMessage,
 } from 'lancer-shared/lib/messages';
-import {inProd} from './env';
+import {inProd} from '../env';
 
 const DEV_SERVER = 'http://localhost:8080';
 
@@ -18,12 +18,11 @@ const PROD_SERVER = `zeddic.com:${PROD_PORT}`;
 
 const SERVER = inProd() ? PROD_SERVER : DEV_SERVER;
 
-export class SocketService {
+export class ClientSocketService {
   private socket: SocketIOClient.Socket = {} as SocketIOClient.Socket;
 
-  public init(): SocketService {
+  public init() {
     this.socket = io(SERVER);
-    return this;
   }
 
   // send a message for the server to broadcast
