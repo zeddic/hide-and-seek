@@ -1,10 +1,12 @@
 import * as PIXI from 'pixi.js';
 import Stats from 'stats.js';
 import * as ecsy from 'ecsy';
-import {Position, Velocity} from './position_component';
-import {PhysicsSystem} from './physics_system';
+import {Position} from 'lancer-shared/lib/game/position_component';
+import {Movement} from 'lancer-shared/lib/game/movement_component';
 import {RenderSystem} from './render_system';
-import {randomInt, randomValue} from './util/random';
+import {randomInt, randomValue} from 'lancer-shared/lib/util/random';
+import {PhysicsSystem} from 'lancer-shared/lib/game/physics_system';
+import {Vector} from 'lancer-shared/lib/util/vector';
 
 /**
  * The number of milliseconds that should be simulated in each update
@@ -57,15 +59,34 @@ export class Game {
   public setup() {
     this.world
       .registerComponent(Position)
-      .registerComponent(Velocity)
+      .registerComponent(Movement)
       .registerSystem(PhysicsSystem)
       .registerSystem(RenderSystem, {graphics: this.graphics});
 
     for (let i = 0; i < 100; i++) {
+      const a = new Vector(
+        randomValue(-0.001, 0.001),
+        randomValue(-0.001, 0.001)
+      );
+      const v = new Vector(randomValue(-0.1, 0.1), randomValue(-0.1, 0.1));
+      // console.log(a);
+      // console.log(v);
       this.world
         .createEntity()
-        .addComponent(Velocity, {x: randomValue(-1, 1), y: randomValue(-1, 1)})
-        .addComponent(Position, {x: randomInt(40, 200), y: randomInt(40, 200)});
+        // .addComponent(Movement, {
+        //   a: new Vector(randomValue(-1, 1), randomValue(-1, 1)),
+        //   v: new Vector(randomValue(-1, 1), randomValue(-1, 1)),
+        // })
+        .addComponent(Movement, {
+          a,
+          v,
+          x: randomInt(40, 200),
+          y: randomInt(40, 200),
+        })
+        .addComponent(Position, {
+          x: randomInt(40, 200),
+          y: randomInt(40, 200),
+        });
     }
 
     this.startGameLoop();

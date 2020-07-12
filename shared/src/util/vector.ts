@@ -40,17 +40,31 @@ export class Vector {
     return this.x * other.x + this.y * other.y;
   }
 
-  public copy() {
+  /**
+   * Copy the values of another vector into this instance.
+   */
+  public copy(source: Vector) {
+    this.x = source.x;
+    this.y = source.y;
+    return this;
+  }
+
+  /**
+   * Returns a new vector that has the same dimensions of this one.
+   */
+  public clone() {
     return new Vector(this.x, this.y);
   }
 
   public clear() {
     this.x = 0;
     this.y = 0;
+    return this;
   }
 
   public set(x: number, y: number) {
     this.x = x;
     this.y = y;
+    return this;
   }
 }
