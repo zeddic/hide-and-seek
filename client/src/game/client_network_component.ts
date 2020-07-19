@@ -1,9 +1,6 @@
 import {Component, Types} from 'ecsy';
-import {PropsOf} from 'lancer-shared/lib/util/ecsy_types';
 
-export class ClientNetworkComponent extends Component<
-  PropsOf<ClientNetworkComponent>
-> {
+export class ClientNetworkComponent extends Component<ClientNetworkComponent> {
   frame: number = -1;
   lastSyncedFrame: number = -1;
 

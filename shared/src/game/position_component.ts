@@ -1,7 +1,6 @@
-import {PropsOf} from 'src/util/ecsy_types';
 import {Component, Types} from 'ecsy';
 
-export class Position extends Component<PropsOf<Position>> {
+export class Position extends Component<Position> {
   x!: number;
   y!: number;
 

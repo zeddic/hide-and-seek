@@ -1,11 +1,11 @@
 import {Component, Types} from 'ecsy';
-import {PropsOf, CustomTypes} from '../util/ecsy_types';
+import {CustomTypes} from '../util/ecsy_types';
 import {Vector} from '../util/vector';
 
 /**
  * Stores data on entity movement.
  */
-export class Movement extends Component<PropsOf<Movement>> {
+export class Movement extends Component<Movement> {
   /** Velocity */
   v!: Vector;
 

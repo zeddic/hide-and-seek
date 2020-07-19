@@ -1,5 +1,4 @@
 import {System, Component, Types} from 'ecsy';
-import {PropsOf} from 'lancer-shared/lib/util/ecsy_types';
 
 /**
  * A system that captures user input and stores it in a global state component.
@@ -53,7 +52,7 @@ function copySet<T>(src: Set<T>, dest: Set<T>) {
  * A 'singleton' component that contains both the state of the keyboard and
  * a queue of input events to be processed.
  */
-export class InputState extends Component<PropsOf<InputState>> {
+export class InputState extends Component<InputState> {
   isPressed = new Set<Key>();
   justPressed = new Set<Key>();
   // queue: InputEvent[] = [];

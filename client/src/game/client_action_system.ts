@@ -1,5 +1,4 @@
 import {System, Component, Types} from 'ecsy';
-import {PropsOf} from 'lancer-shared/lib/util/ecsy_types';
 import {InputState, Key} from './input_system';
 import {
   Action,
@@ -8,9 +7,7 @@ import {
   KNOWN_ACTIONS,
 } from 'lancer-shared/lib/game/actions';
 
-export class ActionStateComponent extends Component<
-  PropsOf<ActionStateComponent>
-> {
+export class ActionStateComponent extends Component<ActionStateComponent> {
   state: ActionsState = {frame: -1, actions: {}};
 
   static schema = {
