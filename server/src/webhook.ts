@@ -29,6 +29,7 @@ handler.on('push', function (event) {
 
   if (repository === REPO_NAME) {
     shell.cd('~/lancer');
+    exec('git reset --hard');
     exec('git pull');
     exec('yarn install --production');
 
