@@ -8,7 +8,9 @@ import {
   KNOWN_ACTIONS,
 } from 'lancer-shared/lib/game/actions';
 
-export class ActionStateComponent extends Component<PropsOf<InputState>> {
+export class ActionStateComponent extends Component<
+  PropsOf<ActionStateComponent>
+> {
   state: ActionsState = {frame: -1, actions: {}};
 
   static schema = {

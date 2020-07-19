@@ -1,11 +1,10 @@
 import {Attributes, Entity, System, World} from 'ecsy';
 import {Movement} from 'lancer-shared/lib/game/movement_component';
 import {Position} from 'lancer-shared/lib/game/position_component';
-// import io from 'socket.io-client';
 import {StateUpdateMessage} from 'lancer-shared/lib/messages';
-import {ClientSocketService} from './client_socket_service';
-import {ClientNetworkComponent} from './client_network_component';
 import {ActionStateComponent} from './client_action_system';
+import {ClientNetworkComponent} from './client_network_component';
+import {ClientSocketService} from './client_socket_service';
 
 /**
  * A system that recieves state syncs game state between the client and
@@ -84,10 +83,10 @@ export class ClientNetworkSystem extends System {
       ActionStateComponent
     );
 
-    const networkEntity = this.queries.network.results[0];
-    const networkComponent = actionEntity.getMutableComponent(
-      ClientNetworkComponent
-    );
+    // const networkEntity = this.queries.network.results[0];
+    // const networkComponent = actionEntity.getMutableComponent(
+    //   ClientNetworkComponent
+    // );
 
     const actionsState = actionStateComponent.state;
     actionsState.frame = this.frame;

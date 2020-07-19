@@ -1,14 +1,13 @@
-import io from 'socket.io-client';
-import {fromEvent, Observable} from 'rxjs';
 import {
   ChatMessage,
-  StateUpdateMessage,
   MessageType,
   MoveMessage,
   PlayerActionMessage,
+  StateUpdateMessage,
 } from 'lancer-shared/lib/messages';
+import {fromEvent, Observable} from 'rxjs';
+import io from 'socket.io-client';
 import {inProd} from '../env';
-import {ActionStateComponent} from './client_action_system';
 
 const DEV_SERVER = 'http://localhost:8080';
 

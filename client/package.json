@@ -13,7 +13,7 @@
     "@types/react-dom": "^16.9.0",
     "@types/socket.io-client": "^1.4.33",
     "@types/stats.js": "^0.17.0",
-    "ecsy": "^0.3.1",
+    "ecsy": "^0.3.2",
     "lancer-shared": "1.0.0",
     "pixi.js": "^5.3.0",
     "react": "^16.13.1",

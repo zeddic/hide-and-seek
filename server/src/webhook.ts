@@ -54,7 +54,7 @@ handler.on('push', function (event) {
 
     // Restart server
     // Assumes initially started as:
-    // pm2 start dist/server.js --name lancer
+    // pm2 start build/server.js --name lancer
     exec('pm2 restart lancer');
 
     // Restart webhook (must go last!)
