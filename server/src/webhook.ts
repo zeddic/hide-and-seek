@@ -33,6 +33,15 @@ handler.on('push', function (event) {
     exec('git pull');
     exec('yarn install --production');
 
+    // Build shared
+    // Normally, this should be triggered automatically when building
+    // when using tsc --build on a project that depends on it. However,
+    // the react-scripts on the client wrap the tsc build step so this
+    // parameter can't be passed. For now, just build it manually first.
+    shell.cd('shared');
+    exec('yarn run build');
+    shell.cd('../');
+
     // Build client
     shell.cd('client');
     exec('yarn run build');
