@@ -5,8 +5,7 @@
  * accumlate time that has passed until the fixed interval has been reached.
  *
  * Doing this allows us to keep our update simulation logic stable between
- * runtime environments, as slight variations in delta can result in
- * differences in simulation.
+ * runtime environments.
  */
 export function createFixedTimestepFn(
   fixedIntervalMs: number,

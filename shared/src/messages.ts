@@ -1,9 +1,12 @@
+import {ActionsState} from './game/actions';
+
 export enum MessageType {
   CONNECT = 'connect',
   DISCONNECT = 'disconnect',
   MESSAGE = 'message',
   MOVE = 'move',
   STATE_UPDATE = 'state_update',
+  PLAYER_ACTION = 'player_action',
 }
 
 export interface ChatMessage {
@@ -15,7 +18,10 @@ export interface MoveMessage {
   y: number;
 }
 
+export interface PlayerActionMessage extends ActionsState {}
+
 export interface StateUpdateMessage {
+  frame: number;
   updates: EntityUpdate[];
 }
 

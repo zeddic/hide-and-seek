@@ -6,10 +6,14 @@ import {
   MessageType,
   MoveMessage,
   StateUpdateMessage,
+  PlayerActionMessage,
 } from 'lancer-shared/lib/messages';
 import * as socketIo from 'socket.io';
 import {Socket} from 'socket.io';
 import {inProd} from '../utils/env';
+import {Subject, fromEvent, Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+
 var cors = require('cors');
 
 const HTTPS_PRIVATE_KEY =
@@ -25,6 +29,8 @@ export class SocketService {
   private httpsServer: https.Server | undefined;
   private io: SocketIO.Server;
   private port: string | number;
+  private playerIdGen = 0;
+  private onPlayerActionSubject = new Subject<OnPlayerActionEvent>();
 
   constructor() {
     this.expressApp = express();
@@ -69,23 +75,28 @@ export class SocketService {
 
     this.io.on(MessageType.CONNECT, (socket: Socket) => {
       console.log('Connected client on port %s.', this.port);
+      const player = this.playerIdGen++;
 
-      // socket.on(MessageType.MESSAGE, (m: ChatMessage) => {
-      //   this.io.emit('message', m);
-      // });
+      fromEvent(socket, MessageType.PLAYER_ACTION)
+        .pipe(map(msg => ({player, msg})))
+        .subscribe(this.onPlayerActionSubject);
 
       socket.on(MessageType.DISCONNECT, () => {});
 
       socket.on(MessageType.MOVE, (msg: MoveMessage) => {});
     });
-
-    // setInterval(() => {
-    //   const msg: StateUpdateMessage = {players};
-    //   this.io.emit(MessageType.STATE_UPDATE, msg);
-    // }, 1000 / 60);
   }
 
   sendStateUpdate(msg: StateUpdateMessage) {
     this.io.emit(MessageType.STATE_UPDATE, msg);
   }
+
+  onPlayerAction() {
+    return this.onPlayerActionSubject.asObservable();
+  }
+}
+
+export interface OnPlayerActionEvent {
+  player: number;
+  msg: PlayerActionMessage;
 }

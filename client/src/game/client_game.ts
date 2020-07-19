@@ -5,6 +5,8 @@ import * as PIXI from 'pixi.js';
 import Stats from 'stats.js';
 import {ClientNetworkSystem} from './client_network_system';
 import {RenderSystem} from './render_system';
+import {InputSystem} from './input_system';
+import {ActionSystem} from './client_action_system';
 
 /**
  * The number of milliseconds that should be simulated in each update
@@ -64,6 +66,8 @@ export class ClientGame {
       .registerComponent(Position)
       .registerComponent(Movement)
       // .registerSystem(PhysicsSystem)
+      .registerSystem(InputSystem)
+      .registerSystem(ActionSystem)
       .registerSystem(ClientNetworkSystem)
       .registerSystem(RenderSystem, {graphics: this.graphics});
 

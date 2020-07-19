@@ -5,8 +5,10 @@ import {
   StateUpdateMessage,
   MessageType,
   MoveMessage,
+  PlayerActionMessage,
 } from 'lancer-shared/lib/messages';
 import {inProd} from '../env';
+import {ActionStateComponent} from './client_action_system';
 
 const DEV_SERVER = 'http://localhost:8080';
 
@@ -32,6 +34,10 @@ export class ClientSocketService {
 
   public sendMove(msg: MoveMessage): void {
     this.socket.emit(MessageType.MOVE, msg);
+  }
+
+  public sendPlayerAction(msg: PlayerActionMessage): void {
+    this.socket.emit(MessageType.PLAYER_ACTION, msg);
   }
 
   // link message event to rxjs data source

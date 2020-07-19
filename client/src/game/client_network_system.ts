@@ -4,6 +4,8 @@ import {Position} from 'lancer-shared/lib/game/position_component';
 // import io from 'socket.io-client';
 import {StateUpdateMessage} from 'lancer-shared/lib/messages';
 import {ClientSocketService} from './client_socket_service';
+import {ClientNetworkComponent} from './client_network_component';
+import {ActionStateComponent} from './client_action_system';
 
 /**
  * A system that recieves state syncs game state between the client and
@@ -12,6 +14,16 @@ import {ClientSocketService} from './client_socket_service';
 export class ClientNetworkSystem extends System {
   private readonly socketService: ClientSocketService;
   private readonly entities = new Map<number, Entity>();
+  private frame: number = -1;
+
+  static queries = {
+    network: {
+      components: [ClientNetworkComponent],
+    },
+    action: {
+      components: [ActionStateComponent],
+    },
+  };
 
   constructor(world: World, attributes: Attributes) {
     super(world, attributes);
@@ -22,7 +34,15 @@ export class ClientNetworkSystem extends System {
       .subscribe(msg => this.onStateUpdate(msg));
   }
 
+  init() {
+    this.world.registerComponent(ClientNetworkComponent, false);
+    this.world.createEntity().addComponent(ClientNetworkComponent);
+  }
+
   private onStateUpdate(msg: StateUpdateMessage) {
+    // console.log(msg.frame);
+    this.frame = msg.frame;
+
     for (const update of msg.updates) {
       const id = update.id;
       const entity = this.entities.has(id)
@@ -59,6 +79,27 @@ export class ClientNetworkSystem extends System {
   }
 
   execute(delta: number, time: number) {
+    const actionEntity = this.queries.action.results[0];
+    const actionStateComponent = actionEntity.getMutableComponent(
+      ActionStateComponent
+    );
+
+    const networkEntity = this.queries.network.results[0];
+    const networkComponent = actionEntity.getMutableComponent(
+      ClientNetworkComponent
+    );
+
+    const actionsState = actionStateComponent.state;
+    actionsState.frame = this.frame;
+
+    if (Object.keys(actionsState.actions).length > 0) {
+      this.socketService.sendPlayerAction(actionsState);
+    }
+
+    // console.log(actionsState);
+    // console.log(actionStateComponent.state);
+    // console.log();
+
     // todo: send user input back to server on a fixed interval
   }
 }

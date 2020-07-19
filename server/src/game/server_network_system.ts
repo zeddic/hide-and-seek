@@ -2,7 +2,7 @@ import {System, World, Attributes} from 'ecsy';
 import {Movement} from 'lancer-shared/lib/game/movement_component';
 import {Position} from 'lancer-shared/lib/game/position_component';
 import {Socket} from 'socket.io';
-import {SocketService} from './socket_service';
+import {SocketService, OnPlayerActionEvent} from './socket_service';
 import {EntityUpdate} from 'lancer-shared/lib/messages';
 
 /**
@@ -13,13 +13,19 @@ export class ServerNetworkSystem extends System {
   };
 
   private readonly socketService: SocketService;
+  private frame = 0;
 
   constructor(world: World, attributes: Attributes) {
     super(world, attributes);
-
-    // todo: provide this via attribute so it's setup can be
-    // orchestrated elsewhere?
     this.socketService = new SocketService();
+  }
+
+  init() {
+    this.socketService.onPlayerAction().subscribe(e => this.onPlayerAction(e));
+  }
+
+  onPlayerAction(e: OnPlayerActionEvent) {
+    // console.log(e);
   }
 
   execute(delta: number, time: number) {
@@ -40,6 +46,6 @@ export class ServerNetworkSystem extends System {
       updates.push(update);
     }
 
-    this.socketService.sendStateUpdate({updates});
+    this.socketService.sendStateUpdate({frame: this.frame++, updates});
   }
 }
