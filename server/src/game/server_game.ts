@@ -9,6 +9,8 @@ import {createFixedTimestepFn} from 'lancer-shared/lib/util/fixed_timestep';
 import {performance} from 'perf_hooks';
 import {WorldBoundsSystem} from 'lancer-shared/lib/game/world_bounds_system';
 import {ServerNetworkSystem} from './server_network_system';
+import {RemotePlayerControlSystem} from './remote_player_control_system';
+import {RemotePlayerComponent} from './remote_player_component';
 
 const UPDATES_PER_SECOND = 60;
 const MS_PER_UPDATE = 1000 / UPDATES_PER_SECOND;
@@ -26,21 +28,23 @@ export class ServerGame {
     this.world
       .registerComponent(Position)
       .registerComponent(Movement)
+      .registerComponent(RemotePlayerComponent)
       .registerSystem(PhysicsSystem)
       .registerSystem(WorldBoundsSystem)
-      .registerSystem(ServerNetworkSystem);
+      .registerSystem(ServerNetworkSystem)
+      .registerSystem(RemotePlayerControlSystem);
   }
 
   setup() {
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 1; i++) {
       const a = new Vector(
         randomValue(-0.001, 0.001),
         randomValue(-0.001, 0.001)
       );
-      const v = new Vector(randomValue(-0.1, 0.1), randomValue(-0.1, 0.1));
+      const v = new Vector(randomValue(-0.2, 0.2), randomValue(-0.2, 0.2));
       this.world
         .createEntity(String(i))
-        .addComponent(Movement, {a, v})
+        .addComponent(Movement, {v})
         .addComponent(Position, {
           x: randomInt(40, 200),
           y: randomInt(40, 200),

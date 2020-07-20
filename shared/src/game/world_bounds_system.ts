@@ -19,26 +19,22 @@ export class WorldBoundsSystem extends System {
 
       if (p.x <= 0) {
         p.x = 0;
-        m.v.x *= 0;
-        m.a.x *= -1;
+        m.v.x *= -1;
       }
 
       if (p.x >= 1000) {
         p.x = 1000;
-        m.v.x *= 0;
-        m.a.x *= -1;
+        m.v.x *= -1;
       }
 
       if (p.y <= 0) {
         p.y = 0;
-        m.v.y *= 0;
-        m.a.y *= -1;
+        m.v.y *= -1;
       }
 
       if (p.y >= 800) {
         p.y = 800;
-        m.v.y *= 0;
-        m.a.y *= -1;
+        m.v.y *= -1;
       }
     }
   }

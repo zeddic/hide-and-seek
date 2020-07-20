@@ -12,7 +12,8 @@ import {ClientSocketService} from './client_socket_service';
  */
 export class ClientNetworkSystem extends System {
   private readonly socketService: ClientSocketService;
-  private readonly entities = new Map<number, Entity>();
+  private readonly entitiesById = new Map<number, Entity>();
+  private readonly seen = new Set<number>();
   private frame: number = -1;
 
   static queries = {
@@ -42,10 +43,14 @@ export class ClientNetworkSystem extends System {
     // console.log(msg.frame);
     this.frame = msg.frame;
 
+    this.seen.clear();
+
     for (const update of msg.updates) {
       const id = update.id;
-      const entity = this.entities.has(id)
-        ? this.entities.get(id)
+      this.seen.add(id);
+
+      const entity = this.entitiesById.has(id)
+        ? this.entitiesById.get(id)
         : this.createEntity(id);
 
       const p = entity?.getMutableComponent(Position)!;
@@ -56,6 +61,14 @@ export class ClientNetworkSystem extends System {
       m.a.y = update.a.y;
       m.v.x = update.v.x;
       m.v.y = update.v.y;
+    }
+
+    // delete items that no longer exist on the server
+    for (const [id, entity] of this.entitiesById.entries()) {
+      if (!this.seen.has(id)) {
+        entity.remove();
+        this.entitiesById.delete(id);
+      }
     }
 
     // todo: improve the update protocol.
@@ -73,7 +86,7 @@ export class ClientNetworkSystem extends System {
       .addComponent(Position)
       .addComponent(Movement);
 
-    this.entities.set(id, entity);
+    this.entitiesById.set(id, entity);
     return entity;
   }
 

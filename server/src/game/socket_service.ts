@@ -31,6 +31,8 @@ export class SocketService {
   private port: string | number;
   private playerIdGen = 0;
   private onPlayerActionSubject = new Subject<OnPlayerActionEvent>();
+  private onConnectSubject = new Subject<OnConnectEvent>();
+  private onDisconnectSubject = new Subject<OnDisconnectEvent>();
 
   constructor() {
     this.expressApp = express();
@@ -81,9 +83,13 @@ export class SocketService {
         .pipe(map(msg => ({player, msg})))
         .subscribe(this.onPlayerActionSubject);
 
-      socket.on(MessageType.DISCONNECT, () => {});
-
       socket.on(MessageType.MOVE, (msg: MoveMessage) => {});
+
+      fromEvent(socket, MessageType.DISCONNECT)
+        .pipe(map(() => ({player})))
+        .subscribe(this.onDisconnectSubject);
+
+      this.onConnectSubject.next({player});
     });
   }
 
@@ -94,9 +100,25 @@ export class SocketService {
   onPlayerAction() {
     return this.onPlayerActionSubject.asObservable();
   }
+
+  onConnect() {
+    return this.onConnectSubject.asObservable();
+  }
+
+  onDisconnect() {
+    return this.onDisconnectSubject.asObservable();
+  }
 }
 
 export interface OnPlayerActionEvent {
   player: number;
   msg: PlayerActionMessage;
+}
+
+export interface OnConnectEvent {
+  player: number;
+}
+
+export interface OnDisconnectEvent {
+  player: number;
 }
