@@ -37,17 +37,24 @@ export class ServerNetworkSystem extends System {
   }
 
   onConnect(e: OnConnectEvent) {
-    const id = e.player;
+    const playerId = e.player;
     const entity = this.world
-      .createEntity(`player${id}`)
+      .createEntity(`player${playerId}`)
       .addComponent(Position, {x: 100, y: 100})
       .addComponent(Movement)
       .addComponent(RemotePlayerComponent, {
-        playerId: id,
+        playerId: playerId,
       });
 
-    const player = {entity, id};
-    this.playersById.set(id, player);
+    const player = {entity, id: playerId};
+    this.playersById.set(playerId, player);
+
+    this.socketService.sendInit(playerId, {
+      playerId,
+      entityId: entity.id,
+      currentFrame: this.frame,
+      initialState: this.getGameState(),
+    });
   }
 
   onDisconnect(e: OnDisconnectEvent) {
@@ -67,6 +74,16 @@ export class ServerNetworkSystem extends System {
   }
 
   execute(delta: number, time: number) {
+    const updates = this.getGameState();
+    for (const player of this.playersById.values()) {
+      this.socketService.sendState(player.id, {
+        frame: this.frame++,
+        updates,
+      });
+    }
+  }
+
+  private getGameState(): EntityUpdate[] {
     const updates: EntityUpdate[] = [];
 
     for (const entity of this.queries.movable.results) {
@@ -84,9 +101,6 @@ export class ServerNetworkSystem extends System {
       updates.push(update);
     }
 
-    // todo: will want to send custom updates per client that contain
-    // info about their last processed input so we can do client side
-    // reconcilliation.
-    this.socketService.sendStateUpdate({frame: this.frame++, updates});
+    return updates;
   }
 }

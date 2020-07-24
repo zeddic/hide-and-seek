@@ -1,7 +1,6 @@
 import {
-  ChatMessage,
+  InitGameMessage,
   MessageType,
-  MoveMessage,
   PlayerActionMessage,
   StateUpdateMessage,
 } from 'lancer-shared/lib/messages';
@@ -22,30 +21,24 @@ const SERVER = inProd() ? PROD_SERVER : DEV_SERVER;
 export class ClientSocketService {
   private socket: SocketIOClient.Socket = {} as SocketIOClient.Socket;
 
-  public init() {
-    this.socket = io(SERVER);
+  constructor() {
+    this.socket = io(SERVER, {autoConnect: false});
   }
 
-  // send a message for the server to broadcast
-  public send(message: ChatMessage): void {
-    this.socket.emit('message', message);
-  }
-
-  public sendMove(msg: MoveMessage): void {
-    this.socket.emit(MessageType.MOVE, msg);
+  public connect() {
+    this.socket.connect();
   }
 
   public sendPlayerAction(msg: PlayerActionMessage): void {
     this.socket.emit(MessageType.PLAYER_ACTION, msg);
   }
 
-  // link message event to rxjs data source
-  public onMessage(): Observable<ChatMessage> {
-    return fromEvent(this.socket, 'message');
-  }
-
   public onStateUpdate(): Observable<StateUpdateMessage> {
     return fromEvent(this.socket, MessageType.STATE_UPDATE);
+  }
+
+  public onInitGame(): Observable<InitGameMessage> {
+    return fromEvent(this.socket, MessageType.INIT);
   }
 
   // disconnect - used when unmounting

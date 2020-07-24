@@ -7,6 +7,10 @@ import {ClientNetworkSystem} from './client_network_system';
 import {RenderSystem} from './render_system';
 import {InputSystem} from './input_system';
 import {ActionSystem} from './client_action_system';
+import {PhysicsSystem} from 'lancer-shared/lib/game/physics_system';
+import {LocalPlayerComponent} from './local_player_component';
+import {LocalPlayerControlSystem} from './local_player_control_system';
+import {WorldBoundsSystem} from 'lancer-shared/lib/game/world_bounds_system';
 
 /**
  * The number of milliseconds that should be simulated in each update
@@ -47,11 +51,8 @@ export class ClientGame {
 
     // State
     this.stage = new PIXI.Container();
-    // const bounds = getBoundsOf(this.renderer.view);
     this.graphics = new PIXI.Graphics();
-    // this.state = new GameState(bounds, stage, new Input());
     this.stage.addChild(this.graphics);
-
     this.world = new ecsy.World();
   }
 
@@ -65,10 +66,13 @@ export class ClientGame {
     this.world
       .registerComponent(Position)
       .registerComponent(Movement)
-      // .registerSystem(PhysicsSystem)
+      .registerComponent(LocalPlayerComponent)
       .registerSystem(InputSystem)
       .registerSystem(ActionSystem)
       .registerSystem(ClientNetworkSystem)
+      .registerSystem(LocalPlayerControlSystem)
+      .registerSystem(PhysicsSystem)
+      .registerSystem(WorldBoundsSystem)
       .registerSystem(RenderSystem, {graphics: this.graphics});
 
     this.startGameLoop();

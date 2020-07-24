@@ -2,6 +2,7 @@ import {ActionsState} from './game/actions';
 
 export enum MessageType {
   CONNECT = 'connect',
+  INIT = 'init',
   DISCONNECT = 'disconnect',
   MESSAGE = 'message',
   MOVE = 'move',
@@ -19,6 +20,13 @@ export interface MoveMessage {
 }
 
 export interface PlayerActionMessage extends ActionsState {}
+
+export interface InitGameMessage {
+  currentFrame: number;
+  initialState: EntityUpdate[];
+  playerId: number;
+  entityId: number;
+}
 
 export interface StateUpdateMessage {
   frame: number;

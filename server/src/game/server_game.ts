@@ -29,27 +29,27 @@ export class ServerGame {
       .registerComponent(Position)
       .registerComponent(Movement)
       .registerComponent(RemotePlayerComponent)
-      .registerSystem(PhysicsSystem)
-      .registerSystem(WorldBoundsSystem)
       .registerSystem(ServerNetworkSystem)
-      .registerSystem(RemotePlayerControlSystem);
+      .registerSystem(RemotePlayerControlSystem)
+      .registerSystem(PhysicsSystem)
+      .registerSystem(WorldBoundsSystem);
   }
 
   setup() {
-    for (let i = 0; i < 1; i++) {
-      const a = new Vector(
-        randomValue(-0.001, 0.001),
-        randomValue(-0.001, 0.001)
-      );
-      const v = new Vector(randomValue(-0.2, 0.2), randomValue(-0.2, 0.2));
-      this.world
-        .createEntity(String(i))
-        .addComponent(Movement, {v})
-        .addComponent(Position, {
-          x: randomInt(40, 200),
-          y: randomInt(40, 200),
-        });
-    }
+    // for (let i = 0; i < 1; i++) {
+    //   const a = new Vector(
+    //     randomValue(-0.001, 0.001),
+    //     randomValue(-0.001, 0.001)
+    //   );
+    //   const v = new Vector(randomValue(-0.2, 0.2), randomValue(-0.2, 0.2));
+    //   this.world
+    //     .createEntity(String(i))
+    //     .addComponent(Movement, {v})
+    //     .addComponent(Position, {
+    //       x: randomInt(40, 200),
+    //       y: randomInt(40, 200),
+    //     });
+    // }
 
     this.startGameLoop();
   }

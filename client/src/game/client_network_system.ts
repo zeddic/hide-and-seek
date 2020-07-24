@@ -1,10 +1,11 @@
 import {Attributes, Entity, System, World} from 'ecsy';
 import {Movement} from 'lancer-shared/lib/game/movement_component';
 import {Position} from 'lancer-shared/lib/game/position_component';
-import {StateUpdateMessage} from 'lancer-shared/lib/messages';
+import {StateUpdateMessage, InitGameMessage} from 'lancer-shared/lib/messages';
 import {ActionStateComponent} from './client_action_system';
 import {ClientNetworkComponent} from './client_network_component';
 import {ClientSocketService} from './client_socket_service';
+import {LocalPlayerComponent} from './local_player_component';
 
 /**
  * A system that recieves state syncs game state between the client and
@@ -15,6 +16,7 @@ export class ClientNetworkSystem extends System {
   private readonly entitiesById = new Map<number, Entity>();
   private readonly seen = new Set<number>();
   private frame: number = -1;
+  private playerId: number = -1;
 
   static queries = {
     network: {
@@ -28,10 +30,12 @@ export class ClientNetworkSystem extends System {
   constructor(world: World, attributes: Attributes) {
     super(world, attributes);
     this.socketService = new ClientSocketService();
-    this.socketService.init();
+    this.socketService.onInitGame().subscribe(msg => this.onInitGame(msg));
     this.socketService
       .onStateUpdate()
       .subscribe(msg => this.onStateUpdate(msg));
+
+    this.socketService.connect();
   }
 
   init() {
@@ -39,8 +43,17 @@ export class ClientNetworkSystem extends System {
     this.world.createEntity().addComponent(ClientNetworkComponent);
   }
 
+  private onInitGame(msg: InitGameMessage) {
+    this.frame = msg.currentFrame;
+    this.playerId = msg.playerId;
+    this.createEntity(msg.entityId).addComponent(LocalPlayerComponent, {
+      playerId: msg.playerId,
+    });
+  }
+
   private onStateUpdate(msg: StateUpdateMessage) {
-    // console.log(msg.frame);
+    // todo: defer processing until the execute stage so we can control
+    // when these updates occur compared to other systems.
     this.frame = msg.frame;
 
     this.seen.clear();
@@ -80,7 +93,7 @@ export class ClientNetworkSystem extends System {
     //     messages for adding/removing options.
   }
 
-  private createEntity(id: number) {
+  private createEntity(id: number): Entity {
     const entity = this.world
       .createEntity()
       .addComponent(Position)

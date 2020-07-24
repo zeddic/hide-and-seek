@@ -7,12 +7,13 @@ import {
   MoveMessage,
   StateUpdateMessage,
   PlayerActionMessage,
+  InitGameMessage,
 } from 'lancer-shared/lib/messages';
 import * as socketIo from 'socket.io';
 import {Socket} from 'socket.io';
 import {inProd} from '../utils/env';
 import {Subject, fromEvent, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 
 var cors = require('cors');
 
@@ -33,6 +34,11 @@ export class SocketService {
   private onPlayerActionSubject = new Subject<OnPlayerActionEvent>();
   private onConnectSubject = new Subject<OnConnectEvent>();
   private onDisconnectSubject = new Subject<OnDisconnectEvent>();
+
+  /**
+   * Maps an active connection to the Socket subject.
+   */
+  private playerToSocket = new Map<number, Socket>();
 
   constructor() {
     this.expressApp = express();
@@ -76,25 +82,45 @@ export class SocketService {
     }
 
     this.io.on(MessageType.CONNECT, (socket: Socket) => {
-      console.log('Connected client on port %s.', this.port);
       const player = this.playerIdGen++;
+      console.log(`Connected player ${player} on port ${this.port}.`);
+      this.playerToSocket.set(player, socket);
 
       fromEvent(socket, MessageType.PLAYER_ACTION)
         .pipe(map(msg => ({player, msg})))
         .subscribe(this.onPlayerActionSubject);
 
-      socket.on(MessageType.MOVE, (msg: MoveMessage) => {});
-
       fromEvent(socket, MessageType.DISCONNECT)
-        .pipe(map(() => ({player})))
+        .pipe(
+          map(() => ({player})),
+          tap(() => {
+            this.playerToSocket.delete[player];
+          })
+        )
         .subscribe(this.onDisconnectSubject);
 
       this.onConnectSubject.next({player});
     });
   }
 
-  sendStateUpdate(msg: StateUpdateMessage) {
-    this.io.emit(MessageType.STATE_UPDATE, msg);
+  sendState(player: number, msg: StateUpdateMessage) {
+    // setTimeout(() => {
+    this.sendMessageToPlayer(player, MessageType.STATE_UPDATE, msg);
+    // }, 200);
+  }
+
+  sendInit(player: number, msg: InitGameMessage) {
+    this.sendMessageToPlayer(player, MessageType.INIT, msg);
+  }
+
+  private sendMessageToPlayer(player: number, type: MessageType, msg: {}) {
+    const socket = this.playerToSocket.get(player);
+    if (!socket) {
+      console.warn(`Failed to send msg ${type} to ${player}. Connection gone.`);
+      return;
+    }
+
+    socket.emit(type, msg);
   }
 
   onPlayerAction() {

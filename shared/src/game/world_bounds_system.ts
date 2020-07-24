@@ -17,22 +17,22 @@ export class WorldBoundsSystem extends System {
       const p = entity.getComponent(Position);
       const m = entity.getComponent(Movement);
 
-      if (p.x <= 0) {
+      if (p.x < 0) {
         p.x = 0;
         m.v.x *= -1;
       }
 
-      if (p.x >= 1000) {
+      if (p.x > 1000) {
         p.x = 1000;
         m.v.x *= -1;
       }
 
-      if (p.y <= 0) {
+      if (p.y < 0) {
         p.y = 0;
         m.v.y *= -1;
       }
 
-      if (p.y >= 800) {
+      if (p.y > 800) {
         p.y = 800;
         m.v.y *= -1;
       }
