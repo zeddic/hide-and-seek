@@ -3,7 +3,7 @@ import {Movement} from 'lancer-shared/lib/game/movement_component';
 import {LocalPlayerComponent} from './local_player_component';
 import {ActionStateComponent} from './client_action_system';
 
-const PLAYER_SPEED = 200 / 1000;
+const PLAYER_SPEED = 400 / 1000;
 
 /**
  * A system that allows a remote player to control an entity.
@@ -22,7 +22,7 @@ export class LocalPlayerControlSystem extends System {
     const entities = this.queries.player.results;
     const actionsEntity = this.queries.actions.results[0];
     const actionState = actionsEntity.getComponent(ActionStateComponent);
-    const actions = actionState.state.actions;
+    const actions = actionState.current.actions;
     for (const entity of entities) {
       // const remote = entity.getMutableComponent(LocalPlayerComponent)!;
       const movement = entity.getMutableComponent(Movement);

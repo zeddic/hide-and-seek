@@ -2,7 +2,7 @@ import {System} from 'ecsy';
 import {RemotePlayerComponent} from './remote_player_component';
 import {Movement} from 'lancer-shared/lib/game/movement_component';
 
-const PLAYER_SPEED = 200 / 1000;
+const PLAYER_SPEED = 400 / 1000;
 
 /**
  * A system that allows a remote player to control an entity.
@@ -41,7 +41,7 @@ export class RemotePlayerControlSystem extends System {
           movement.v.addValues(PLAYER_SPEED, 0);
         }
 
-        remote.lastProcessedInput = actionsState.frame;
+        remote.lastProcessedInput = actionsState.id;
       }
     }
   }

@@ -31,6 +31,7 @@ export interface InitGameMessage {
 export interface StateUpdateMessage {
   frame: number;
   updates: EntityUpdate[];
+  lastProcessedInput?: number;
 }
 
 export interface EntityUpdate {

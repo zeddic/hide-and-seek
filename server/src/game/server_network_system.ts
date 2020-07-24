@@ -76,9 +76,11 @@ export class ServerNetworkSystem extends System {
   execute(delta: number, time: number) {
     const updates = this.getGameState();
     for (const player of this.playersById.values()) {
+      const remote = player.entity.getComponent(RemotePlayerComponent);
       this.socketService.sendState(player.id, {
         frame: this.frame++,
         updates,
+        lastProcessedInput: remote.lastProcessedInput,
       });
     }
   }

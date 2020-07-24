@@ -20,8 +20,6 @@ export class RenderSystem extends System {
 
     for (const entity of this.queries.movable.results) {
       const p = entity.getComponent(Position);
-      // const v = entity.getComponent(Velocity);
-      // console.log(p);
       this.graphics.drawCircle(p.x, p.y, 10);
     }
   }

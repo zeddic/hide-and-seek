@@ -6,13 +6,17 @@ import {
   ActionActiveMap,
   KNOWN_ACTIONS,
 } from 'lancer-shared/lib/game/actions';
+import {ReplayState} from './replay_state';
 
 export class ActionStateComponent extends Component<ActionStateComponent> {
-  state: ActionsState = {frame: -1, actions: {}};
+  current: ActionsState = {id: -1, actions: {}};
+  unconfirmed: ActionsState[] = [];
+  lastConfirmedInput: number = -1;
 
   static schema = {
-    state: {type: Types.Ref},
-    // queue: {type: Types.Ref},
+    current: {type: Types.Ref},
+    queue: {type: Types.Ref},
+    lastConfirmedInput: {type: Types.Number},
   };
 }
 
@@ -30,7 +34,12 @@ export class ActionSystem extends System {
     action: {
       components: [ActionStateComponent],
     },
+    replay: {
+      components: [ReplayState],
+    },
   };
+
+  inputIdGen = 0;
 
   init() {
     this.world.registerComponent(ActionStateComponent, false);
@@ -38,6 +47,23 @@ export class ActionSystem extends System {
   }
 
   execute() {
+    if (this.isReplaying()) {
+      this.executeDuringReplay();
+    } else {
+      this.executeRegular();
+    }
+  }
+
+  executeDuringReplay() {
+    const replayState = this.getReplayState();
+    const actionEntity = this.queries.action.results[0];
+    const actionState = actionEntity.getMutableComponent(ActionStateComponent);
+
+    const inputToReplay = actionState.unconfirmed[replayState.frameCount];
+    actionState.current = inputToReplay || {};
+  }
+
+  executeRegular() {
     const inputEntity = this.queries.input.results[0];
     const inputState = inputEntity.getMutableComponent(InputState);
 
@@ -66,7 +92,19 @@ export class ActionSystem extends System {
       if (isActiveThisFrame) activeActions[action] = true;
     }
 
-    actionStateComponent.state.actions = activeActions;
+    const input = {id: this.inputIdGen++, actions: activeActions};
+
+    actionStateComponent.current = input;
+    actionStateComponent.unconfirmed.push(input);
+  }
+
+  isReplaying() {
+    return this.getReplayState().isReplaying;
+  }
+
+  getReplayState() {
+    const replayEntity = this.queries.replay.results[0];
+    return replayEntity.getComponent(ReplayState);
   }
 }
 

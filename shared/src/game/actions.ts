@@ -19,7 +19,7 @@ export const KNOWN_ACTIONS = Object.values(Action) as Action[];
  *
  */
 export interface ActionsState {
-  frame: number;
+  id: number;
   actions: ActionActiveMap;
 }
 
