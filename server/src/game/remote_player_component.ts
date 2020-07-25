@@ -1,5 +1,5 @@
 import {System, Component, Types} from 'ecsy';
-import {ActionsState} from 'lancer-shared/lib/game/actions';
+import {ActionSnapshot} from 'lancer-shared/lib/game/actions';
 
 /**
  * Contains information about an entity that is being remotely controlled
@@ -20,7 +20,7 @@ export class RemotePlayerComponent extends Component<RemotePlayerComponent> {
    * Note that frame number will be LESS than the frame number on
    * the server due to latency.
    */
-  inputQueue: ActionsState[] = [];
+  inputQueue: ActionSnapshot[] = [];
 
   /**
    * The frame number of the last processed ActionsState by the

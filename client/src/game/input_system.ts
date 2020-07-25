@@ -1,6 +1,20 @@
 import {System, Component, Types} from 'ecsy';
 
 /**
+ * A 'singleton' component that contains both the state of the keyboard and
+ * a queue of input events to be processed.
+ */
+export class InputState extends Component<InputState> {
+  isPressed = new Set<Key>();
+  justPressed = new Set<Key>();
+
+  static schema = {
+    isPressed: {type: Types.Ref},
+    queue: {type: Types.Ref},
+  };
+}
+
+/**
  * A system that captures user input and stores it in a global state component.
  */
 export class InputSystem extends System {
@@ -46,21 +60,6 @@ function copySet<T>(src: Set<T>, dest: Set<T>) {
   for (const key of src) {
     dest.add(key);
   }
-}
-
-/**
- * A 'singleton' component that contains both the state of the keyboard and
- * a queue of input events to be processed.
- */
-export class InputState extends Component<InputState> {
-  isPressed = new Set<Key>();
-  justPressed = new Set<Key>();
-  // queue: InputEvent[] = [];
-
-  static schema = {
-    isPressed: {type: Types.Ref},
-    queue: {type: Types.Ref},
-  };
 }
 
 export enum Key {

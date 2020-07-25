@@ -1,4 +1,4 @@
-import {ActionsState} from './game/actions';
+import {ActionSnapshot} from './game/actions';
 
 export enum MessageType {
   CONNECT = 'connect',
@@ -19,7 +19,7 @@ export interface MoveMessage {
   y: number;
 }
 
-export interface PlayerActionMessage extends ActionsState {}
+export interface PlayerActionMessage extends ActionSnapshot {}
 
 export interface InitGameMessage {
   currentFrame: number;

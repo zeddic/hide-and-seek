@@ -1,7 +1,8 @@
 import {System} from 'ecsy';
 import {Movement} from 'lancer-shared/lib/game/movement_component';
 import {LocalPlayerComponent} from './local_player_component';
-import {ActionStateComponent} from './client_action_system';
+import {ActionState} from './action_system';
+import {ActionActiveMap} from 'lancer-shared/lib/game/actions';
 
 const PLAYER_SPEED = 400 / 1000;
 
@@ -14,17 +15,20 @@ export class LocalPlayerControlSystem extends System {
       components: [LocalPlayerComponent, Movement],
     },
     actions: {
-      components: [ActionStateComponent],
+      components: [ActionState],
     },
   };
 
   execute() {
-    const entities = this.queries.player.results;
     const actionsEntity = this.queries.actions.results[0];
-    const actionState = actionsEntity.getComponent(ActionStateComponent);
+    const actionState = actionsEntity.getComponent(ActionState);
     const actions = actionState.current.actions;
+    this.executeWithActions(actions);
+  }
+
+  executeWithActions(actions: ActionActiveMap) {
+    const entities = this.getControlledEntities();
     for (const entity of entities) {
-      // const remote = entity.getMutableComponent(LocalPlayerComponent)!;
       const movement = entity.getMutableComponent(Movement);
       movement.v.set(0, 0);
 
@@ -40,5 +44,9 @@ export class LocalPlayerControlSystem extends System {
         movement.v.addValues(PLAYER_SPEED, 0);
       }
     }
+  }
+
+  getControlledEntities() {
+    return this.queries.player.results;
   }
 }

@@ -104,9 +104,9 @@ export class SocketService {
   }
 
   sendState(player: number, msg: StateUpdateMessage) {
-    // setTimeout(() => {
-    this.sendMessageToPlayer(player, MessageType.STATE_UPDATE, msg);
-    // }, 0);
+    setTimeout(() => {
+      this.sendMessageToPlayer(player, MessageType.STATE_UPDATE, msg);
+    }, 1000);
   }
 
   sendInit(player: number, msg: InitGameMessage) {

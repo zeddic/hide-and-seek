@@ -5,13 +5,13 @@ import {Position} from 'lancer-shared/lib/game/position_component';
 import {WorldBoundsSystem} from 'lancer-shared/lib/game/world_bounds_system';
 import * as PIXI from 'pixi.js';
 import Stats from 'stats.js';
-import {ActionSystem} from './client_action_system';
-import {ClientNetworkSystem} from './client_network_system';
+import {ActionSystem} from './action_system';
+import {NetworkSystem} from './network_system';
 import {InputSystem} from './input_system';
 import {LocalPlayerComponent} from './local_player_component';
 import {LocalPlayerControlSystem} from './local_player_control_system';
 import {RenderSystem} from './render_system';
-import {ReplaySystem} from './replay_system';
+import {NetworkReconciliationSystem} from './network_reconciliation_system';
 
 /**
  * The number of milliseconds that should be simulated in each update
@@ -70,8 +70,8 @@ export class ClientGame {
       .registerComponent(LocalPlayerComponent)
       .registerSystem(InputSystem)
       .registerSystem(ActionSystem)
-      .registerSystem(ReplaySystem)
-      .registerSystem(ClientNetworkSystem)
+      .registerSystem(NetworkSystem)
+      .registerSystem(NetworkReconciliationSystem)
       .registerSystem(LocalPlayerControlSystem)
       .registerSystem(PhysicsSystem)
       .registerSystem(WorldBoundsSystem)

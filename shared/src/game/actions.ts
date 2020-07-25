@@ -16,10 +16,18 @@ export enum Action {
 export const KNOWN_ACTIONS = Object.values(Action) as Action[];
 
 /**
- *
+ * Captures the state of input actions as seen on a particular frame
+ * on the client.
  */
-export interface ActionsState {
+export interface ActionSnapshot {
+  /**
+   * A unique id for this snapshot.
+   */
   id: number;
+
+  /**
+   * The state of the actions when the snapshot was taken.
+   */
   actions: ActionActiveMap;
 }
 

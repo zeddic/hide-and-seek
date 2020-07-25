@@ -2,17 +2,17 @@ import {Attributes, Entity, System, World} from 'ecsy';
 import {Movement} from 'lancer-shared/lib/game/movement_component';
 import {Position} from 'lancer-shared/lib/game/position_component';
 import {StateUpdateMessage, InitGameMessage} from 'lancer-shared/lib/messages';
-import {ActionStateComponent} from './client_action_system';
-import {ClientNetworkComponent} from './client_network_component';
+import {ActionState, ActionSystem} from './action_system';
+import {NetworkState} from './network_state';
 import {ClientSocketService} from './client_socket_service';
 import {LocalPlayerComponent} from './local_player_component';
-import {ReplayState} from './replay_state';
+import {NetworkReconciliationSystem} from './network_reconciliation_system';
 
 /**
  * A system that recieves state syncs game state between the client and
  * server versions of the game.
  */
-export class ClientNetworkSystem extends System {
+export class NetworkSystem extends System {
   private readonly socketService: ClientSocketService;
   private readonly entitiesById = new Map<number, Entity>();
   private readonly seen = new Set<number>();
@@ -21,13 +21,10 @@ export class ClientNetworkSystem extends System {
 
   static queries = {
     network: {
-      components: [ClientNetworkComponent],
+      components: [NetworkState],
     },
     action: {
-      components: [ActionStateComponent],
-    },
-    replay: {
-      components: [ReplayState],
+      components: [ActionState],
     },
   };
 
@@ -43,12 +40,12 @@ export class ClientNetworkSystem extends System {
   }
 
   init() {
-    this.world.registerComponent(ClientNetworkComponent, false);
-    this.world.createEntity().addComponent(ClientNetworkComponent);
+    this.world.registerComponent(NetworkState, false);
+    this.world.createEntity().addComponent(NetworkState);
   }
 
   private onInitGame(msg: InitGameMessage) {
-    this.frame = msg.currentFrame;
+    this.getNetworkState().frame = msg.currentFrame;
     this.createEntity(msg.entityId).addComponent(LocalPlayerComponent, {
       playerId: msg.playerId,
     });
@@ -68,22 +65,24 @@ export class ClientNetworkSystem extends System {
     return entity;
   }
 
-  execute(delta: number, time: number) {
-    if (this.isReplaying()) {
-      return;
-    }
-
-    this.processServerMessage(delta, time);
+  execute() {
+    this.processServerMessage();
     this.sendUserInput();
   }
 
-  processServerMessage(delta: number, time: number) {
-    if (!this.lastUpdate) return;
+  processServerMessage() {
+    if (!this.lastUpdate) {
+      return;
+    }
 
     const msg = this.lastUpdate;
     this.lastUpdate = undefined;
-    this.frame = msg.frame;
 
+    const state = this.getNetworkState();
+    state.frame = msg.frame;
+    state.lastConfirmedAction = msg.lastProcessedInput || -1;
+
+    // Snap world state to the latest snapshot.
     this.seen.clear();
     for (const update of msg.updates) {
       const id = update.id;
@@ -118,54 +117,16 @@ export class ClientNetworkSystem extends System {
     //     this games complexity, this may be simple and fast enough.
     // (2) Send deltas. Only items that change get sent. Would need seperate
     //     messages for adding/removing options.
-
-    const actionEntity = this.queries.action.results[0];
-    const actionState = actionEntity.getMutableComponent(ActionStateComponent);
-
-    const lastConfirmed = msg.lastProcessedInput;
-    if (
-      lastConfirmed !== undefined &&
-      actionState.lastConfirmedInput !== lastConfirmed
-    ) {
-      actionState.lastConfirmedInput = lastConfirmed;
-
-      while (
-        actionState.unconfirmed.length > 0 &&
-        actionState.unconfirmed[0].id <= lastConfirmed
-      ) {
-        actionState.unconfirmed.shift();
-      }
-
-      const replayEntity = this.queries.replay.results[0];
-      const replayState = replayEntity.getMutableComponent(ReplayState);
-
-      if (actionState.unconfirmed.length > 1) {
-        replayState.isReplaying = true;
-        replayState.frameCount = 0;
-        for (let i = 0; i < actionState.unconfirmed.length - 1; i++) {
-          this.world.execute(delta, time);
-        }
-
-        replayState.isReplaying = false;
-        actionState.current =
-          actionState.unconfirmed[actionState.unconfirmed.length - 1];
-      }
-    }
   }
 
   sendUserInput() {
     const actionEntity = this.queries.action.results[0];
-    const actionState = actionEntity.getMutableComponent(ActionStateComponent);
+    const actionState = actionEntity.getMutableComponent(ActionState);
     const current = actionState.current;
-    // if (Object.keys(current.actions).length > 0) {
     this.socketService.sendPlayerAction(current);
-    // actionState.unconfirmed.push(current);
-    // }
   }
 
-  isReplaying() {
-    const replayEntity = this.queries.replay.results[0];
-    const replayState = replayEntity.getComponent(ReplayState);
-    return replayState.isReplaying;
+  getNetworkState(): NetworkState {
+    return this.queries.network.results[0].getMutableComponent(NetworkState);
   }
 }
