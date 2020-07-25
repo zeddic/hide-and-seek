@@ -8,7 +8,7 @@ import {
   OnDisconnectEvent,
 } from './socket_service';
 import {EntityUpdate} from 'lancer-shared/lib/messages';
-import {RemotePlayerComponent} from './remote_player_component';
+import {RemotePlayerControlled} from './remote_player_controlled';
 
 interface Player {
   id: number;
@@ -42,7 +42,7 @@ export class ServerNetworkSystem extends System {
       .createEntity(`player${playerId}`)
       .addComponent(Position, {x: 100, y: 100})
       .addComponent(Movement)
-      .addComponent(RemotePlayerComponent, {
+      .addComponent(RemotePlayerControlled, {
         playerId: playerId,
       });
 
@@ -69,14 +69,14 @@ export class ServerNetworkSystem extends System {
     if (!this.playersById.has(id)) return;
 
     const player = this.playersById.get(id);
-    const remote = player.entity.getMutableComponent(RemotePlayerComponent);
+    const remote = player.entity.getMutableComponent(RemotePlayerControlled);
     remote.inputQueue.push(e.msg);
   }
 
   execute(delta: number, time: number) {
     const updates = this.getGameState();
     for (const player of this.playersById.values()) {
-      const remote = player.entity.getComponent(RemotePlayerComponent);
+      const remote = player.entity.getComponent(RemotePlayerControlled);
       this.socketService.sendState(player.id, {
         frame: this.frame++,
         updates,

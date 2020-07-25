@@ -11,6 +11,11 @@ export class NetworkState extends Component<NetworkState> {
   frame: number = -1;
 
   /**
+   * A unique id that the server has assigned this client.
+   */
+  playerId: number = -1;
+
+  /**
    * A list of user input that the client application has performed, but has
    * not yet recieved confirmation from the server that it has been processed.
    */
@@ -23,6 +28,7 @@ export class NetworkState extends Component<NetworkState> {
 
   static schema = {
     frame: {type: Types.Number},
+    playerId: {type: Types.Number},
     unconfirmedActions: {type: Types.Ref},
     lastConfirmedAction: {type: Types.Number},
   };

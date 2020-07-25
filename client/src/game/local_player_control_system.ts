@@ -1,18 +1,17 @@
 import {System} from 'ecsy';
 import {Movement} from 'lancer-shared/lib/game/movement_component';
-import {LocalPlayerComponent} from './local_player_component';
+import {LocalPlayerControlled} from './local_player_controlled';
 import {ActionState} from './action_system';
 import {ActionActiveMap} from 'lancer-shared/lib/game/actions';
-
-const PLAYER_SPEED = 400 / 1000;
+import {PLAYER_SPEED} from 'lancer-shared/lib/game/constants';
 
 /**
- * A system that allows a remote player to control an entity.
+ * A system that allows a local player to control an entity.
  */
 export class LocalPlayerControlSystem extends System {
   static queries = {
     player: {
-      components: [LocalPlayerComponent, Movement],
+      components: [LocalPlayerControlled, Movement],
     },
     actions: {
       components: [ActionState],

@@ -1,12 +1,11 @@
 import {Attributes, Entity, System, World} from 'ecsy';
 import {Movement} from 'lancer-shared/lib/game/movement_component';
 import {Position} from 'lancer-shared/lib/game/position_component';
-import {StateUpdateMessage, InitGameMessage} from 'lancer-shared/lib/messages';
-import {ActionState, ActionSystem} from './action_system';
-import {NetworkState} from './network_state';
+import {InitGameMessage, StateUpdateMessage} from 'lancer-shared/lib/messages';
+import {ActionState} from './action_system';
 import {ClientSocketService} from './client_socket_service';
-import {LocalPlayerComponent} from './local_player_component';
-import {NetworkReconciliationSystem} from './network_reconciliation_system';
+import {LocalPlayerControlled} from './local_player_controlled';
+import {NetworkState} from './network_state';
 
 /**
  * A system that recieves state syncs game state between the client and
@@ -16,8 +15,7 @@ export class NetworkSystem extends System {
   private readonly socketService: ClientSocketService;
   private readonly entitiesById = new Map<number, Entity>();
   private readonly seen = new Set<number>();
-  private frame: number = -1;
-  private lastUpdate?: StateUpdateMessage;
+  private lastStateUpdateMsg?: StateUpdateMessage;
 
   static queries = {
     network: {
@@ -31,52 +29,62 @@ export class NetworkSystem extends System {
   constructor(world: World, attributes: Attributes) {
     super(world, attributes);
     this.socketService = new ClientSocketService();
-    this.socketService.onInitGame().subscribe(msg => this.onInitGame(msg));
-    this.socketService
-      .onStateUpdate()
-      .subscribe(msg => this.onStateUpdate(msg));
-
-    this.socketService.connect();
   }
 
   init() {
     this.world.registerComponent(NetworkState, false);
     this.world.createEntity().addComponent(NetworkState);
+    this.initSocket();
   }
 
-  private onInitGame(msg: InitGameMessage) {
-    this.getNetworkState().frame = msg.currentFrame;
-    this.createEntity(msg.entityId).addComponent(LocalPlayerComponent, {
-      playerId: msg.playerId,
-    });
+  /**
+   * Setup the socket connection and listen for incomming messages.
+   */
+  initSocket() {
+    this.socketService.onInitGame().subscribe(msg => this.onInitGameMsg(msg));
+    this.socketService
+      .onStateUpdate()
+      .subscribe(msg => this.onStateUpdateMsg(msg));
+
+    this.socketService.connect();
   }
 
-  private onStateUpdate(msg: StateUpdateMessage) {
-    this.lastUpdate = msg;
+  /**
+   * Server confirmed us joining and assiged us a playerid.
+   */
+  private onInitGameMsg(msg: InitGameMessage) {
+    const state = this.getNetworkState();
+    state.frame = msg.currentFrame;
+    state.playerId = msg.playerId;
+
+    // Create an entity for the current player.
+    this.createEntity(msg.entityId).addComponent(LocalPlayerControlled);
   }
 
-  private createEntity(id: number): Entity {
-    const entity = this.world
-      .createEntity()
-      .addComponent(Position)
-      .addComponent(Movement);
-
-    this.entitiesById.set(id, entity);
-    return entity;
+  /**
+   * Server send a new game state update.
+   */
+  private onStateUpdateMsg(msg: StateUpdateMessage) {
+    // Defer processing until the execute stage.
+    this.lastStateUpdateMsg = msg;
   }
 
   execute() {
-    this.processServerMessage();
+    this.processServerStateMessage();
     this.sendUserInput();
   }
 
-  processServerMessage() {
-    if (!this.lastUpdate) {
+  /**
+   * Processes the most recent state update recieved by the server.
+   * Updates the client game state to match.
+   */
+  processServerStateMessage() {
+    if (!this.lastStateUpdateMsg) {
       return;
     }
 
-    const msg = this.lastUpdate;
-    this.lastUpdate = undefined;
+    const msg = this.lastStateUpdateMsg;
+    this.lastStateUpdateMsg = undefined;
 
     const state = this.getNetworkState();
     state.frame = msg.frame;
@@ -124,6 +132,16 @@ export class NetworkSystem extends System {
     const actionState = actionEntity.getMutableComponent(ActionState);
     const current = actionState.current;
     this.socketService.sendPlayerAction(current);
+  }
+
+  private createEntity(id: number): Entity {
+    const entity = this.world
+      .createEntity()
+      .addComponent(Position)
+      .addComponent(Movement);
+
+    this.entitiesById.set(id, entity);
+    return entity;
   }
 
   getNetworkState(): NetworkState {

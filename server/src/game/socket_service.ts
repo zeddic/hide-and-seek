@@ -3,17 +3,16 @@ import * as fs from 'fs';
 import {createServer, Server} from 'http';
 import * as https from 'https';
 import {
-  MessageType,
-  MoveMessage,
-  StateUpdateMessage,
-  PlayerActionMessage,
   InitGameMessage,
+  MessageType,
+  PlayerActionMessage,
+  StateUpdateMessage,
 } from 'lancer-shared/lib/messages';
+import {fromEvent, Subject} from 'rxjs';
+import {map, tap} from 'rxjs/operators';
 import * as socketIo from 'socket.io';
 import {Socket} from 'socket.io';
 import {inProd} from '../utils/env';
-import {Subject, fromEvent, Observable} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
 
 var cors = require('cors');
 
@@ -104,9 +103,7 @@ export class SocketService {
   }
 
   sendState(player: number, msg: StateUpdateMessage) {
-    setTimeout(() => {
-      this.sendMessageToPlayer(player, MessageType.STATE_UPDATE, msg);
-    }, 1000);
+    this.sendMessageToPlayer(player, MessageType.STATE_UPDATE, msg);
   }
 
   sendInit(player: number, msg: InitGameMessage) {

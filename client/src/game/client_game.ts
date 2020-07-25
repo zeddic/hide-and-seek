@@ -8,7 +8,7 @@ import Stats from 'stats.js';
 import {ActionSystem} from './action_system';
 import {NetworkSystem} from './network_system';
 import {InputSystem} from './input_system';
-import {LocalPlayerComponent} from './local_player_component';
+import {LocalPlayerControlled} from './local_player_controlled';
 import {LocalPlayerControlSystem} from './local_player_control_system';
 import {RenderSystem} from './render_system';
 import {NetworkReconciliationSystem} from './network_reconciliation_system';
@@ -67,7 +67,7 @@ export class ClientGame {
     this.world
       .registerComponent(Position)
       .registerComponent(Movement)
-      .registerComponent(LocalPlayerComponent)
+      .registerComponent(LocalPlayerControlled)
       .registerSystem(InputSystem)
       .registerSystem(ActionSystem)
       .registerSystem(NetworkSystem)

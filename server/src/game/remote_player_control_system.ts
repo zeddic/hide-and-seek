@@ -1,8 +1,7 @@
 import {System} from 'ecsy';
-import {RemotePlayerComponent} from './remote_player_component';
+import {RemotePlayerControlled} from './remote_player_controlled';
 import {Movement} from 'lancer-shared/lib/game/movement_component';
-
-const PLAYER_SPEED = 400 / 1000;
+import {PLAYER_SPEED} from 'lancer-shared/lib/game/constants';
 
 /**
  * A system that allows a remote player to control an entity.
@@ -10,7 +9,7 @@ const PLAYER_SPEED = 400 / 1000;
 export class RemotePlayerControlSystem extends System {
   static queries = {
     remote: {
-      components: [RemotePlayerComponent, Movement],
+      components: [RemotePlayerControlled, Movement],
     },
   };
 
@@ -18,13 +17,18 @@ export class RemotePlayerControlSystem extends System {
     const entities = this.queries.remote.results;
 
     for (const entity of entities) {
-      const remote = entity.getMutableComponent(RemotePlayerComponent)!;
+      const remote = entity.getMutableComponent(RemotePlayerControlled)!;
       const movement = entity.getMutableComponent(Movement);
       movement.v.set(0, 0);
 
       // Only process at most 1 input per frame!
       // Each entry in the queue represents the state on the client at
       // single frame.
+
+      // todo: merge what common logic I can with the local_player_control_system.
+      // Otherwise they are going to get out of sync. Especially needed as
+      // controls chemes get more advanced.
+
       if (remote.inputQueue.length > 0) {
         const actionsState = remote.inputQueue.shift();
         const actions = actionsState.actions;

@@ -3,6 +3,7 @@ import {PhysicsSystem} from 'lancer-shared/lib/game/physics_system';
 import {ActionState} from './action_system';
 import {LocalPlayerControlSystem} from './local_player_control_system';
 import {NetworkState} from './network_state';
+import {WorldBoundsSystem} from 'lancer-shared/lib/game/world_bounds_system';
 
 /**
  * A system that reconciles local user input (which the client optimistically
@@ -93,10 +94,16 @@ export class NetworkReconciliationSystem extends System {
         PhysicsSystem
       ) as PhysicsSystem;
 
+      const worldBoundsSystem = this.world.getSystem(
+        WorldBoundsSystem
+      ) as WorldBoundsSystem;
+
       playerControlSystem.executeWithActions(unconfirmed[i].actions);
       const entitiesToUpdate = playerControlSystem.getControlledEntities();
 
       physicsSystem.updateEntities(delta, time, entitiesToUpdate);
+
+      worldBoundsSystem.execute(delta, time);
     }
   }
 

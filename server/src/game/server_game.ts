@@ -10,7 +10,7 @@ import {performance} from 'perf_hooks';
 import {WorldBoundsSystem} from 'lancer-shared/lib/game/world_bounds_system';
 import {ServerNetworkSystem} from './server_network_system';
 import {RemotePlayerControlSystem} from './remote_player_control_system';
-import {RemotePlayerComponent} from './remote_player_component';
+import {RemotePlayerControlled} from './remote_player_controlled';
 
 const UPDATES_PER_SECOND = 60;
 const MS_PER_UPDATE = 1000 / UPDATES_PER_SECOND;
@@ -28,7 +28,7 @@ export class ServerGame {
     this.world
       .registerComponent(Position)
       .registerComponent(Movement)
-      .registerComponent(RemotePlayerComponent)
+      .registerComponent(RemotePlayerControlled)
       .registerSystem(ServerNetworkSystem)
       .registerSystem(RemotePlayerControlSystem)
       .registerSystem(PhysicsSystem)

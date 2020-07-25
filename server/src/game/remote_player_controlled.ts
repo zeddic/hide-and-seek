@@ -5,7 +5,7 @@ import {ActionSnapshot} from 'lancer-shared/lib/game/actions';
  * Contains information about an entity that is being remotely controlled
  * via a client.
  */
-export class RemotePlayerComponent extends Component<RemotePlayerComponent> {
+export class RemotePlayerControlled extends Component<RemotePlayerControlled> {
   /**
    * The unique id of the remote player controlling the entity.
    */
