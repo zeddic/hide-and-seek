@@ -12,6 +12,9 @@ import {LocalPlayerControlled} from './local_player_controlled';
 import {LocalPlayerControlSystem} from './local_player_control_system';
 import {RenderSystem} from './render_system';
 import {NetworkReconciliationSystem} from './network_reconciliation_system';
+import {createGameLoader} from './resources';
+import {Sprite} from './sprite';
+import {SpriteResources} from './sprite_resources';
 
 /**
  * The number of milliseconds that should be simulated in each update
@@ -64,20 +67,28 @@ export class ClientGame {
   }
 
   public setup() {
-    this.world
-      .registerComponent(Position)
-      .registerComponent(Movement)
-      .registerComponent(LocalPlayerControlled)
-      .registerSystem(InputSystem)
-      .registerSystem(ActionSystem)
-      .registerSystem(NetworkSystem)
-      .registerSystem(NetworkReconciliationSystem)
-      .registerSystem(LocalPlayerControlSystem)
-      .registerSystem(PhysicsSystem)
-      .registerSystem(WorldBoundsSystem)
-      .registerSystem(RenderSystem, {graphics: this.graphics});
+    const loader = createGameLoader();
+    loader.load(() => {
+      this.world
+        .registerComponent(Position)
+        .registerComponent(Movement)
+        .registerComponent(LocalPlayerControlled)
+        .registerComponent(Sprite)
+        .registerComponent(SpriteResources)
+        .registerSystem(InputSystem)
+        .registerSystem(ActionSystem)
+        .registerSystem(NetworkSystem)
+        .registerSystem(NetworkReconciliationSystem)
+        .registerSystem(LocalPlayerControlSystem)
+        .registerSystem(PhysicsSystem)
+        .registerSystem(WorldBoundsSystem)
+        .registerSystem(RenderSystem, {
+          graphics: this.graphics,
+          stage: this.stage,
+        });
 
-    this.startGameLoop();
+      this.startGameLoop();
+    });
   }
 
   private startGameLoop() {
@@ -106,6 +117,11 @@ export class ClientGame {
 
         accumlator -= FIXED_UPDATE_STEP_MS;
         updates++;
+        if (updates > 1) {
+          console.log(`doing catchup ${updates}`);
+        } else {
+          console.log('caught up');
+        }
       }
 
       this.render();

@@ -6,6 +6,8 @@ import {ActionState} from './action_system';
 import {ClientSocketService} from './client_socket_service';
 import {LocalPlayerControlled} from './local_player_controlled';
 import {NetworkState} from './network_state';
+import {Image} from './resources';
+import {Sprite} from './sprite';
 
 /**
  * A system that recieves state syncs game state between the client and
@@ -58,7 +60,9 @@ export class NetworkSystem extends System {
     state.playerId = msg.playerId;
 
     // Create an entity for the current player.
-    this.createEntity(msg.entityId).addComponent(LocalPlayerControlled);
+    this.createEntity(msg.entityId)
+      .addComponent(LocalPlayerControlled)
+      .addComponent(Sprite, {image: Image.SHIP});
   }
 
   /**
