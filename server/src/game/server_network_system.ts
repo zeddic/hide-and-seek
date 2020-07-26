@@ -1,6 +1,7 @@
 import {System, World, Attributes, Entity} from 'ecsy';
-import {Movement} from 'lancer-shared/lib/game/movement_component';
-import {Position} from 'lancer-shared/lib/game/position_component';
+// import {Physics, Position} from 'lancer-shared/lib/game/components';
+import {Physics} from 'lancer-shared/lib/game/components/physics';
+import {Position} from 'lancer-shared/lib/game/components/position';
 import {
   SocketService,
   OnPlayerActionEvent,
@@ -41,7 +42,7 @@ export class ServerNetworkSystem extends System {
     const entity = this.world
       .createEntity(`player${playerId}`)
       .addComponent(Position, {x: 100, y: 100})
-      .addComponent(Movement)
+      .addComponent(Physics)
       .addComponent(RemotePlayerControlled, {
         playerId: playerId,
       });
@@ -90,7 +91,7 @@ export class ServerNetworkSystem extends System {
 
     for (const entity of this.queries.movable.results) {
       const p = entity.getComponent(Position);
-      const m = entity.getComponent(Movement);
+      const m = entity.getComponent(Physics);
 
       const update = {
         id: entity.id,

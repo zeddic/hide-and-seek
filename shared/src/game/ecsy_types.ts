@@ -1,5 +1,5 @@
 import {createType, copyCopyable, cloneClonable, Component} from 'ecsy';
-import {Vector} from './vector';
+import {Vector} from './util/vector';
 
 /**
  * Custom ecsy schema types used in this game.

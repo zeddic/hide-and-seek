@@ -1,16 +1,13 @@
 import {World} from 'ecsy';
-
-import {Position} from 'lancer-shared/lib/game/position_component';
-import {Movement} from 'lancer-shared/lib/game/movement_component';
-import {randomInt, randomValue} from 'lancer-shared/lib/util/random';
+import {Physics} from 'lancer-shared/lib/game/components/physics';
+import {Position} from 'lancer-shared/lib/game/components/position';
 import {PhysicsSystem} from 'lancer-shared/lib/game/physics_system';
-import {Vector} from 'lancer-shared/lib/util/vector';
-import {createFixedTimestepFn} from 'lancer-shared/lib/util/fixed_timestep';
-import {performance} from 'perf_hooks';
 import {WorldBoundsSystem} from 'lancer-shared/lib/game/world_bounds_system';
-import {ServerNetworkSystem} from './server_network_system';
-import {RemotePlayerControlSystem} from './remote_player_control_system';
+import {createFixedTimestepFn} from 'lancer-shared/lib/game/util/fixed_timestep';
+import {performance} from 'perf_hooks';
 import {RemotePlayerControlled} from './remote_player_controlled';
+import {RemotePlayerControlSystem} from './remote_player_control_system';
+import {ServerNetworkSystem} from './server_network_system';
 
 const UPDATES_PER_SECOND = 60;
 const MS_PER_UPDATE = 1000 / UPDATES_PER_SECOND;
@@ -27,7 +24,7 @@ export class ServerGame {
     this.world = new World();
     this.world
       .registerComponent(Position)
-      .registerComponent(Movement)
+      .registerComponent(Physics)
       .registerComponent(RemotePlayerControlled)
       .registerSystem(ServerNetworkSystem)
       .registerSystem(RemotePlayerControlSystem)

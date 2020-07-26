@@ -1,6 +1,5 @@
 import {Attributes, Entity, System, World} from 'ecsy';
-import {Movement} from 'lancer-shared/lib/game/movement_component';
-import {Position} from 'lancer-shared/lib/game/position_component';
+import {Position, Physics} from 'lancer-shared/lib/game/components';
 import {InitGameMessage, StateUpdateMessage} from 'lancer-shared/lib/messages';
 import {ActionState} from './action_system';
 import {ClientSocketService} from './client_socket_service';
@@ -105,7 +104,7 @@ export class NetworkSystem extends System {
         : this.createEntity(id);
 
       const p = entity?.getMutableComponent(Position)!;
-      const m = entity?.getMutableComponent(Movement)!;
+      const m = entity?.getMutableComponent(Physics)!;
       p.x = update.x;
       p.y = update.y;
       m.a.x = update.a.x;
@@ -142,7 +141,7 @@ export class NetworkSystem extends System {
     const entity = this.world
       .createEntity()
       .addComponent(Position)
-      .addComponent(Movement);
+      .addComponent(Physics);
 
     this.entitiesById.set(id, entity);
     return entity;

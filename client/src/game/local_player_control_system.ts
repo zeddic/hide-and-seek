@@ -1,5 +1,5 @@
 import {System} from 'ecsy';
-import {Movement} from 'lancer-shared/lib/game/movement_component';
+import {Physics} from 'lancer-shared/lib/game/components';
 import {LocalPlayerControlled} from './local_player_controlled';
 import {ActionState} from './action_system';
 import {ActionActiveMap} from 'lancer-shared/lib/game/actions';
@@ -11,7 +11,7 @@ import {PLAYER_SPEED} from 'lancer-shared/lib/game/constants';
 export class LocalPlayerControlSystem extends System {
   static queries = {
     player: {
-      components: [LocalPlayerControlled, Movement],
+      components: [LocalPlayerControlled, Physics],
     },
     actions: {
       components: [ActionState],
@@ -28,7 +28,7 @@ export class LocalPlayerControlSystem extends System {
   executeWithActions(actions: ActionActiveMap) {
     const entities = this.getControlledEntities();
     for (const entity of entities) {
-      const movement = entity.getMutableComponent(Movement);
+      const movement = entity.getMutableComponent(Physics);
       movement.v.set(0, 0);
 
       if (actions.up) {

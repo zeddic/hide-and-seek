@@ -1,6 +1,6 @@
 import {System} from 'ecsy';
 import {RemotePlayerControlled} from './remote_player_controlled';
-import {Movement} from 'lancer-shared/lib/game/movement_component';
+import {Physics} from 'lancer-shared/lib/game/components';
 import {PLAYER_SPEED} from 'lancer-shared/lib/game/constants';
 
 const MAX_INPUT_QUEUE_SIZE = 4;
@@ -11,7 +11,7 @@ const MAX_INPUT_QUEUE_SIZE = 4;
 export class RemotePlayerControlSystem extends System {
   static queries = {
     remote: {
-      components: [RemotePlayerControlled, Movement],
+      components: [RemotePlayerControlled, Physics],
     },
   };
 
@@ -20,7 +20,7 @@ export class RemotePlayerControlSystem extends System {
 
     for (const entity of entities) {
       const remote = entity.getMutableComponent(RemotePlayerControlled)!;
-      const movement = entity.getMutableComponent(Movement);
+      const movement = entity.getMutableComponent(Physics);
       movement.v.set(0, 0);
 
       // Only process at most 1 input per frame!

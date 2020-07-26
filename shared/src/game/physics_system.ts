@@ -1,10 +1,10 @@
 import {System, Entity} from 'ecsy';
-import {Movement} from './movement_component';
-import {Position} from './position_component';
+import {Physics} from './components/physics';
+import {Position} from './components/position';
 
 export class PhysicsSystem extends System {
   static queries = {
-    movable: {components: [Position, Movement]},
+    movable: {components: [Position, Physics]},
   };
 
   execute(delta: number, time: number) {
@@ -15,7 +15,7 @@ export class PhysicsSystem extends System {
     // Euler implicit integration
     for (const entity of entities) {
       const p = entity.getComponent(Position);
-      const m = entity.getComponent(Movement);
+      const m = entity.getComponent(Physics);
 
       // Update velocity
       m.v.x += m.a.x * delta;

@@ -1,7 +1,6 @@
 import * as ecsy from 'ecsy';
-import {Movement} from 'lancer-shared/lib/game/movement_component';
 import {PhysicsSystem} from 'lancer-shared/lib/game/physics_system';
-import {Position} from 'lancer-shared/lib/game/position_component';
+import {Position, Physics} from 'lancer-shared/lib/game/components';
 import {WorldBoundsSystem} from 'lancer-shared/lib/game/world_bounds_system';
 import * as PIXI from 'pixi.js';
 import Stats from 'stats.js';
@@ -71,7 +70,7 @@ export class ClientGame {
     loader.load(() => {
       this.world
         .registerComponent(Position)
-        .registerComponent(Movement)
+        .registerComponent(Physics)
         .registerComponent(LocalPlayerControlled)
         .registerComponent(Sprite)
         .registerComponent(SpriteResources)

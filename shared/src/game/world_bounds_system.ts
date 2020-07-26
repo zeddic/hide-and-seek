@@ -1,6 +1,6 @@
 import {System} from 'ecsy';
-import {Movement} from './movement_component';
-import {Position} from './position_component';
+import {Physics} from './components/physics';
+import {Position} from './components/position';
 
 /**
  * A system that keeps items in the world bounds.
@@ -9,13 +9,13 @@ import {Position} from './position_component';
  */
 export class WorldBoundsSystem extends System {
   static queries = {
-    movable: {components: [Position, Movement]},
+    movable: {components: [Position, Physics]},
   };
 
   execute(delta: number, time: number) {
     for (const entity of this.queries.movable.results) {
       const p = entity.getComponent(Position);
-      const m = entity.getComponent(Movement);
+      const m = entity.getComponent(Physics);
 
       if (p.x < 0) {
         p.x = 0;

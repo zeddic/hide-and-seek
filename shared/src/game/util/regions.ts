@@ -1,4 +1,4 @@
-import {Region} from './region';
+import {Region} from '../models/region';
 
 export function isRegionWithin(haystack: Region, needle: Region) {
   return (
