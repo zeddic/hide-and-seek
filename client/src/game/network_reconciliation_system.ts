@@ -115,6 +115,7 @@ export class NetworkReconciliationSystem extends System {
     const state = this.getNetworkState();
     const actionsEntity = this.queries.actions.results[0];
     const actionState = actionsEntity.getComponent(ActionState);
+
     state.unconfirmedActions.push(actionState.current);
   }
 

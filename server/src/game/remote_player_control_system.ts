@@ -3,6 +3,8 @@ import {RemotePlayerControlled} from './remote_player_controlled';
 import {Movement} from 'lancer-shared/lib/game/movement_component';
 import {PLAYER_SPEED} from 'lancer-shared/lib/game/constants';
 
+const MAX_INPUT_QUEUE_SIZE = 4;
+
 /**
  * A system that allows a remote player to control an entity.
  */
@@ -25,10 +27,13 @@ export class RemotePlayerControlSystem extends System {
       // Each entry in the queue represents the state on the client at
       // single frame.
 
+      while (remote.inputQueue.length > MAX_INPUT_QUEUE_SIZE) {
+        remote.inputQueue.shift(); // drop oldest first.
+      }
+
       // todo: merge what common logic I can with the local_player_control_system.
       // Otherwise they are going to get out of sync. Especially needed as
       // controls chemes get more advanced.
-
       if (remote.inputQueue.length > 0) {
         const actionsState = remote.inputQueue.shift();
         const actions = actionsState.actions;

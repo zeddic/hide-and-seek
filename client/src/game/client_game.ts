@@ -25,7 +25,7 @@ const FIXED_UPDATE_STEP_MS = 1000 / 60;
 /**
  * The maximum number of updates to perform per frame.
  */
-const MAX_UPDATES_PER_TICK = 10;
+const MAX_UPDATES_PER_TICK = 2;
 
 /**
  * The game simulation run on the client.
@@ -107,20 +107,15 @@ export class ClientGame {
       accumlator += delta;
 
       let updates = 0;
-      while (
-        accumlator > FIXED_UPDATE_STEP_MS &&
-        updates < MAX_UPDATES_PER_TICK
-      ) {
+      while (accumlator > FIXED_UPDATE_STEP_MS) {
         // this.update(FIXED_UPDATE_STEP_MS / 1000);
-
         this.world.execute(FIXED_UPDATE_STEP_MS, FIXED_UPDATE_STEP_MS / 1000);
-
         accumlator -= FIXED_UPDATE_STEP_MS;
         updates++;
-        if (updates > 1) {
-          console.log(`doing catchup ${updates}`);
-        } else {
-          console.log('caught up');
+
+        if (updates >= MAX_UPDATES_PER_TICK) {
+          accumlator = 0;
+          break;
         }
       }
 
@@ -138,7 +133,3 @@ export class ClientGame {
     this.renderer.render(this.stage);
   }
 }
-
-// function getBoundsOf(view: HTMLCanvasElement) {
-//   return {left: 0, top: 0, right: view.width, bottom: view.height};
-// }
