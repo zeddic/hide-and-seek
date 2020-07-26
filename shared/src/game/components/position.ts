@@ -41,12 +41,7 @@ export class Position extends Component<Position> {
   }
 
   public region(): Region {
-    return {
-      top: this.top,
-      left: this.left,
-      bottom: this.bottom,
-      right: this.right,
-    };
+    return this;
   }
 
   static schema = {

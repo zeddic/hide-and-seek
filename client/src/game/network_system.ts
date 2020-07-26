@@ -107,6 +107,8 @@ export class NetworkSystem extends System {
       const m = entity?.getMutableComponent(Physics)!;
       p.x = update.x;
       p.y = update.y;
+      p.width = update.w;
+      p.height = update.h;
       m.a.x = update.a.x;
       m.a.y = update.a.y;
       m.v.x = update.v.x;

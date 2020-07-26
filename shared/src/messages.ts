@@ -38,6 +38,8 @@ export interface EntityUpdate {
   id: number;
   x: number;
   y: number;
+  w: number;
+  h: number;
   v: {
     x: number;
     y: number;

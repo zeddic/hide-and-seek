@@ -27,17 +27,19 @@ export class RenderSystem extends System {
 
     this.handleSpriteResources();
 
-    for (const entity of queries.sprites.results) {
-      const position = entity.getComponent(Position);
-      const sprite = entity.getComponent(SpriteResources);
-      this.syncSpritePosition(position, sprite);
-    }
-
     this.graphics.clear();
     this.graphics.lineStyle(2, 0xff0000, 1);
+
+    for (const entity of queries.sprites.results) {
+      const p = entity.getComponent(Position);
+      const sprite = entity.getComponent(SpriteResources);
+      this.graphics.drawRect(p.left, p.top, p.width, p.height);
+      this.syncSpritePosition(p, sprite);
+    }
+
     for (const entity of queries.others.results) {
       const p = entity.getComponent(Position);
-      this.graphics.drawRect(p.x - 10, p.y - 10, 20, 20);
+      this.graphics.drawRect(p.left, p.top, p.width, p.height);
     }
   }
 

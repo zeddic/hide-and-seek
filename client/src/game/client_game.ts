@@ -36,6 +36,7 @@ export class ClientGame {
   private graphics: PIXI.Graphics;
   private renderer: PIXI.Renderer;
   private stage: PIXI.Container;
+  private root: PIXI.Container;
   private destroyed = false;
   private world: ecsy.World;
 
@@ -53,9 +54,13 @@ export class ClientGame {
     document.body.appendChild(this.renderer.view);
 
     // State
+    this.root = new PIXI.Container();
     this.stage = new PIXI.Container();
     this.graphics = new PIXI.Graphics();
-    this.stage.addChild(this.graphics);
+    // this.stage.addChild(this.graphics);
+    this.root.addChild(this.stage);
+    this.root.addChild(this.graphics);
+
     this.world = new ecsy.World();
   }
 
@@ -129,6 +134,6 @@ export class ClientGame {
   private update(delta: number) {}
 
   private render() {
-    this.renderer.render(this.stage);
+    this.renderer.render(this.root);
   }
 }
