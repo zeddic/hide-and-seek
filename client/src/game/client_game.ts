@@ -8,12 +8,14 @@ import {ActionSystem} from './action_system';
 import {NetworkSystem} from './network_system';
 import {InputSystem} from './input_system';
 import {LocalPlayerControlled} from './local_player_controlled';
-import {LocalPlayerControlSystem} from './local_player_control_system';
+import {PlayerControlSystem} from './player_control_system';
 import {RenderSystem} from './render_system';
 import {NetworkReconciliationSystem} from './network_reconciliation_system';
 import {createGameLoader} from './resources';
 import {Sprite} from './sprite';
 import {SpriteResources} from './sprite_resources';
+import {CollisionSystem} from 'lancer-shared/lib/game/collision/collision_system';
+import {RemotePlayerControlled} from './remote_player_controlled';
 
 /**
  * The number of milliseconds that should be simulated in each update
@@ -57,10 +59,8 @@ export class ClientGame {
     this.root = new PIXI.Container();
     this.stage = new PIXI.Container();
     this.graphics = new PIXI.Graphics();
-    // this.stage.addChild(this.graphics);
     this.root.addChild(this.stage);
     this.root.addChild(this.graphics);
-
     this.world = new ecsy.World();
   }
 
@@ -77,14 +77,16 @@ export class ClientGame {
         .registerComponent(Position)
         .registerComponent(Physics)
         .registerComponent(LocalPlayerControlled)
+        .registerComponent(RemotePlayerControlled)
         .registerComponent(Sprite)
         .registerComponent(SpriteResources)
         .registerSystem(InputSystem)
         .registerSystem(ActionSystem)
         .registerSystem(NetworkSystem)
         .registerSystem(NetworkReconciliationSystem)
-        .registerSystem(LocalPlayerControlSystem)
+        .registerSystem(PlayerControlSystem)
         .registerSystem(PhysicsSystem)
+        .registerSystem(CollisionSystem)
         .registerSystem(WorldBoundsSystem)
         .registerSystem(RenderSystem, {
           graphics: this.graphics,

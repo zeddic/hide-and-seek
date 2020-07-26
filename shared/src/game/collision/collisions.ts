@@ -230,9 +230,10 @@ function resolveObjectVsObject(details: CollisionDetails) {
   const deltaP = vectors.multiplyScalar(normal, details.overlap);
   const deltaP1 = vectors.multiplyScalar(deltaP, massShares.mass1Percent);
   const deltaP2 = vectors.multiplyScalar(deltaP, massShares.mass2Percent);
+
   p1.x -= deltaP1.x;
   p1.y -= deltaP1.y;
-  p2.x += deltaP2.y;
+  p2.x += deltaP2.x;
   p2.y += deltaP2.y;
 }
 

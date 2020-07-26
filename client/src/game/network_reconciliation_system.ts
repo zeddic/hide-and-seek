@@ -1,9 +1,10 @@
 import {System} from 'ecsy';
 import {PhysicsSystem} from 'lancer-shared/lib/game/physics_system';
 import {ActionState} from './action_system';
-import {LocalPlayerControlSystem} from './local_player_control_system';
+import {PlayerControlSystem} from './player_control_system';
 import {NetworkState} from './network_state';
 import {WorldBoundsSystem} from 'lancer-shared/lib/game/world_bounds_system';
+import {CollisionSystem} from 'lancer-shared/lib/game/collision/collision_system';
 
 /**
  * A system that reconciles local user input (which the client optimistically
@@ -85,24 +86,33 @@ export class NetworkReconciliationSystem extends System {
       return;
     }
 
+    if (unconfirmed.length > 2) {
+      console.log(unconfirmed.length);
+    }
+
     for (let i = 0; i < unconfirmed.length - 1; i++) {
       const playerControlSystem = this.world.getSystem(
-        LocalPlayerControlSystem
-      ) as LocalPlayerControlSystem;
+        PlayerControlSystem
+      ) as PlayerControlSystem;
 
       const physicsSystem = this.world.getSystem(
         PhysicsSystem
       ) as PhysicsSystem;
 
+      const collisionSystem = this.world.getSystem(
+        CollisionSystem
+      ) as CollisionSystem;
+
       const worldBoundsSystem = this.world.getSystem(
         WorldBoundsSystem
       ) as WorldBoundsSystem;
 
-      playerControlSystem.executeWithActions(unconfirmed[i].actions);
-      const entitiesToUpdate = playerControlSystem.getControlledEntities();
+      playerControlSystem.updatePlayer(unconfirmed[i].actions);
+      const entitiesToUpdate = playerControlSystem.getLocalControlledEntities();
 
       physicsSystem.updateEntities(delta, time, entitiesToUpdate);
 
+      collisionSystem.execute(delta);
       worldBoundsSystem.execute(delta, time);
     }
   }

@@ -48,4 +48,5 @@ export interface EntityUpdate {
     x: number;
     y: number;
   };
+  m: number;
 }

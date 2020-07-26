@@ -8,6 +8,7 @@ import {performance} from 'perf_hooks';
 import {RemotePlayerControlled} from './remote_player_controlled';
 import {RemotePlayerControlSystem} from './remote_player_control_system';
 import {ServerNetworkSystem} from './server_network_system';
+import {CollisionSystem} from 'lancer-shared/lib/game/collision/collision_system';
 
 const UPDATES_PER_SECOND = 60;
 const MS_PER_UPDATE = 1000 / UPDATES_PER_SECOND;
@@ -29,6 +30,7 @@ export class ServerGame {
       .registerSystem(ServerNetworkSystem)
       .registerSystem(RemotePlayerControlSystem)
       .registerSystem(PhysicsSystem)
+      .registerSystem(CollisionSystem)
       .registerSystem(WorldBoundsSystem);
   }
 

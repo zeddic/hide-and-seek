@@ -1,10 +1,11 @@
 import {Attributes, Entity, System, World} from 'ecsy';
-import {Position, Physics} from 'lancer-shared/lib/game/components';
+import {Physics, Position} from 'lancer-shared/lib/game/components';
 import {InitGameMessage, StateUpdateMessage} from 'lancer-shared/lib/messages';
 import {ActionState} from './action_system';
 import {ClientSocketService} from './client_socket_service';
 import {LocalPlayerControlled} from './local_player_controlled';
 import {NetworkState} from './network_state';
+import {RemotePlayerControlled} from './remote_player_controlled';
 import {Image} from './resources';
 import {Sprite} from './sprite';
 
@@ -17,6 +18,7 @@ export class NetworkSystem extends System {
   private readonly entitiesById = new Map<number, Entity>();
   private readonly seen = new Set<number>();
   private lastStateUpdateMsg?: StateUpdateMessage;
+  private playerEntity?: Entity;
 
   static queries = {
     network: {
@@ -59,7 +61,7 @@ export class NetworkSystem extends System {
     state.playerId = msg.playerId;
 
     // Create an entity for the current player.
-    this.createEntity(msg.entityId)
+    this.playerEntity = this.createEntity(msg.entityId)
       .addComponent(LocalPlayerControlled)
       .addComponent(Sprite, {image: Image.SHIP});
   }
@@ -68,6 +70,11 @@ export class NetworkSystem extends System {
    * Server send a new game state update.
    */
   private onStateUpdateMsg(msg: StateUpdateMessage) {
+    // if (this.lastStateUpdateMsg) {
+    //   // console.log('already something this frame');
+    // }
+
+    // this.updateQueue.push(msg);
     // Defer processing until the execute stage.
     this.lastStateUpdateMsg = msg;
   }
@@ -103,6 +110,13 @@ export class NetworkSystem extends System {
         ? this.entitiesById.get(id)
         : this.createEntity(id);
 
+      // Ugh, do this properly.
+      if (entity !== this.playerEntity) {
+        if (!entity?.hasComponent(RemotePlayerControlled)) {
+          entity?.addComponent(RemotePlayerControlled);
+        }
+      }
+
       const p = entity?.getMutableComponent(Position)!;
       const m = entity?.getMutableComponent(Physics)!;
       p.x = update.x;
@@ -113,6 +127,7 @@ export class NetworkSystem extends System {
       m.a.y = update.a.y;
       m.v.x = update.v.x;
       m.v.y = update.v.y;
+      m.mass = update.m;
     }
 
     // delete items that no longer exist on the server
