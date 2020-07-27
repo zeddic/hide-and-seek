@@ -16,6 +16,12 @@ import {Sprite} from './sprite';
 import {SpriteResources} from './sprite_resources';
 import {CollisionSystem} from 'lancer-shared/lib/game/collision/collision_system';
 import {RemotePlayerControlled} from './remote_player_controlled';
+import {TileMapSystem} from 'lancer-shared/lib/game/tiles/tile_map_system';
+import {TileMapRenderSystem} from 'lancer-shared/lib/game/tiles/tile_map_render_system';
+import {
+  TILE_MAP_BASE_OPTIONS,
+  TILE_MAP_PALETTE,
+} from 'lancer-shared/lib/game/constants';
 
 /**
  * The number of milliseconds that should be simulated in each update
@@ -27,6 +33,8 @@ const FIXED_UPDATE_STEP_MS = 1000 / 60;
  * The maximum number of updates to perform per frame.
  */
 const MAX_UPDATES_PER_TICK = 2;
+
+PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 /**
  * The game simulation run on the client.
@@ -52,6 +60,7 @@ export class ClientGame {
     this.renderer = new PIXI.Renderer({
       width: 1000,
       height: 800,
+      antialias: false,
     });
     document.body.appendChild(this.renderer.view);
 
@@ -80,6 +89,9 @@ export class ClientGame {
         .registerComponent(RemotePlayerControlled)
         .registerComponent(Sprite)
         .registerComponent(SpriteResources)
+        .registerSystem(TileMapSystem, {
+          options: TILE_MAP_BASE_OPTIONS,
+        })
         .registerSystem(InputSystem)
         .registerSystem(ActionSystem)
         .registerSystem(NetworkSystem)
@@ -88,6 +100,11 @@ export class ClientGame {
         .registerSystem(PhysicsSystem)
         .registerSystem(CollisionSystem)
         .registerSystem(WorldBoundsSystem)
+        .registerSystem(TileMapRenderSystem, {
+          graphics: this.graphics,
+          palette: TILE_MAP_PALETTE,
+          loader,
+        })
         .registerSystem(RenderSystem, {
           graphics: this.graphics,
           stage: this.stage,
@@ -115,6 +132,7 @@ export class ClientGame {
       let updates = 0;
       while (accumlator > FIXED_UPDATE_STEP_MS) {
         // this.update(FIXED_UPDATE_STEP_MS / 1000);
+        this.graphics.clear();
         this.world.execute(FIXED_UPDATE_STEP_MS, FIXED_UPDATE_STEP_MS / 1000);
         accumlator -= FIXED_UPDATE_STEP_MS;
         updates++;
@@ -132,8 +150,6 @@ export class ClientGame {
 
     requestAnimationFrame(step);
   }
-
-  private update(delta: number) {}
 
   private render() {
     this.renderer.render(this.root);

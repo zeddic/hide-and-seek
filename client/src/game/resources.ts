@@ -4,6 +4,8 @@ export enum Image {
   SHIP = 'assets/ship.gif',
   TILE_FLOOR = 'assets/tile_floor.png',
   TILE_WALL = 'assets/tile_wall.png',
+  DINO1 = 'assets/dino1.gif',
+  DINO2 = 'assets/dino2.gif',
 }
 
 export let globalLoader: PIXI.Loader;

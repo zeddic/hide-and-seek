@@ -9,10 +9,19 @@ import {RemotePlayerControlled} from './remote_player_controlled';
 import {RemotePlayerControlSystem} from './remote_player_control_system';
 import {ServerNetworkSystem} from './server_network_system';
 import {CollisionSystem} from 'lancer-shared/lib/game/collision/collision_system';
+import {TileMapSystem} from 'lancer-shared/lib/game/tiles/tile_map_system';
+import {
+  TILE_MAP_BASE_OPTIONS,
+  TILE_MAP_LEVEL_1,
+} from 'lancer-shared/lib/game/constants';
 
 const UPDATES_PER_SECOND = 60;
 const MS_PER_UPDATE = 1000 / UPDATES_PER_SECOND;
 const MS_PER_CHECK = 1000 / (UPDATES_PER_SECOND * 2);
+const TILE_MAP_OPTIONS = {
+  ...TILE_MAP_BASE_OPTIONS,
+  map: TILE_MAP_LEVEL_1,
+};
 
 /**
  * The game simulation run on the server.
@@ -27,6 +36,7 @@ export class ServerGame {
       .registerComponent(Position)
       .registerComponent(Physics)
       .registerComponent(RemotePlayerControlled)
+      .registerSystem(TileMapSystem, {options: TILE_MAP_OPTIONS})
       .registerSystem(ServerNetworkSystem)
       .registerSystem(RemotePlayerControlSystem)
       .registerSystem(PhysicsSystem)

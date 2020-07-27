@@ -10,6 +10,7 @@ import {
 } from './socket_service';
 import {EntityUpdate} from 'lancer-shared/lib/messages';
 import {RemotePlayerControlled} from './remote_player_controlled';
+import {TileMapSystem} from 'lancer-shared/lib/game/tiles/tile_map_system';
 
 interface Player {
   id: number;
@@ -41,7 +42,7 @@ export class ServerNetworkSystem extends System {
     const playerId = e.player;
     const entity = this.world
       .createEntity(`player${playerId}`)
-      .addComponent(Position, {x: 100, y: 100, width: 40, height: 40})
+      .addComponent(Position, {x: 100, y: 100, width: 20, height: 20})
       .addComponent(Physics, {mass: 100})
       .addComponent(RemotePlayerControlled, {
         playerId: playerId,
@@ -50,11 +51,14 @@ export class ServerNetworkSystem extends System {
     const player = {entity, id: playerId};
     this.playersById.set(playerId, player);
 
+    const tileMap = this.world.getSystem(TileMapSystem) as TileMapSystem;
+
     this.socketService.sendInit(playerId, {
       playerId,
       entityId: entity.id,
       currentFrame: this.frame,
       initialState: this.getGameState(),
+      tileMap: tileMap.serialize(),
     });
   }
 

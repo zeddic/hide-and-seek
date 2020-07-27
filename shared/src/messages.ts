@@ -1,4 +1,5 @@
 import {ActionSnapshot} from './game/actions';
+import {SerializedTileMap} from './game/tiles/tile_map';
 
 export enum MessageType {
   CONNECT = 'connect',
@@ -26,6 +27,7 @@ export interface InitGameMessage {
   initialState: EntityUpdate[];
   playerId: number;
   entityId: number;
+  tileMap: SerializedTileMap;
 }
 
 export interface StateUpdateMessage {

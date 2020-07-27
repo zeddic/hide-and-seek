@@ -27,13 +27,12 @@ export class RenderSystem extends System {
 
     this.handleSpriteResources();
 
-    this.graphics.clear();
     this.graphics.lineStyle(2, 0xff0000, 1);
 
     for (const entity of queries.sprites.results) {
       const p = entity.getComponent(Position);
       const sprite = entity.getComponent(SpriteResources);
-      this.graphics.drawRect(p.left, p.top, p.width, p.height);
+      // this.graphics.drawRect(p.left, p.top, p.width, p.height);
       this.syncSpritePosition(p, sprite);
     }
 
@@ -53,6 +52,8 @@ export class RenderSystem extends System {
       const sprite = new PIXI.Sprite(texture);
       sprite.anchor.x = 0.5;
       sprite.anchor.y = 0.5;
+      sprite.scale.x = 1.2; // temporary, read from component
+      sprite.scale.y = 1.2;
       this.stage.addChild(sprite);
       entity.addComponent(SpriteResources, {sprite});
     }
@@ -61,7 +62,6 @@ export class RenderSystem extends System {
       const data = entity.getComponent(SpriteResources);
       data.sprite.destroy();
       entity.removeComponent(SpriteResources);
-      console.log('destroy');
     }
   }
 

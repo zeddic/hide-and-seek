@@ -8,6 +8,7 @@ import {NetworkState} from './network_state';
 import {RemotePlayerControlled} from './remote_player_controlled';
 import {Image} from './resources';
 import {Sprite} from './sprite';
+import {TileMapSystem} from 'lancer-shared/lib/game/tiles/tile_map_system';
 
 /**
  * A system that recieves state syncs game state between the client and
@@ -60,21 +61,20 @@ export class NetworkSystem extends System {
     state.frame = msg.currentFrame;
     state.playerId = msg.playerId;
 
+    // Init tilemap.
+    const tileMapSystem = this.world.getSystem(TileMapSystem) as TileMapSystem;
+    tileMapSystem.deserialize(msg.tileMap);
+
     // Create an entity for the current player.
     this.playerEntity = this.createEntity(msg.entityId)
       .addComponent(LocalPlayerControlled)
-      .addComponent(Sprite, {image: Image.SHIP});
+      .addComponent(Sprite, {image: Image.DINO1});
   }
 
   /**
    * Server send a new game state update.
    */
   private onStateUpdateMsg(msg: StateUpdateMessage) {
-    // if (this.lastStateUpdateMsg) {
-    //   // console.log('already something this frame');
-    // }
-
-    // this.updateQueue.push(msg);
     // Defer processing until the execute stage.
     this.lastStateUpdateMsg = msg;
   }
@@ -111,9 +111,10 @@ export class NetworkSystem extends System {
         : this.createEntity(id);
 
       // Ugh, do this properly.
-      if (entity !== this.playerEntity) {
-        if (!entity?.hasComponent(RemotePlayerControlled)) {
-          entity?.addComponent(RemotePlayerControlled);
+      if (entity && entity !== this.playerEntity) {
+        if (!entity.hasComponent(RemotePlayerControlled)) {
+          entity.addComponent(RemotePlayerControlled);
+          entity.addComponent(Sprite, {image: Image.DINO2});
         }
       }
 

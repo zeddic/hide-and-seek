@@ -1,6 +1,19 @@
 import {Region} from '../models/region';
 import {getClosestExponentOfTwo} from '../util/math';
-import {TileAtlas} from './tile_atlas';
+
+/**
+ * Configures how a single tile should act in the world.
+ */
+export interface TileConfig {
+  isSolid: boolean;
+}
+
+/**
+ * Maps a tile # to it's configuration.
+ */
+export interface TileConfigs {
+  [key: number]: TileConfig;
+}
 
 export interface TileMapOptions {
   /**
@@ -12,14 +25,17 @@ export interface TileMapOptions {
   /**
    * The map of tiles. Each entry is a row, with the sub-array being columns.
    */
-  map: number[][];
+  map?: number[][];
 
   /**
-   * The tile definitions to use within this map.
+   * Contains configuration details for each tile.
    */
-  atlas: TileAtlas;
+  tileConfigs: TileConfigs;
 }
 
+/**
+ * A datastructure that contains the tile map world information.
+ */
 export class TileMap {
   /**
    * The map.
@@ -41,40 +57,17 @@ export class TileMap {
   /**
    * Tile definitions.
    */
-  atlas: TileAtlas;
+  tileConfigs: TileConfigs;
 
   constructor(options: TileMapOptions) {
-    this.tiles = options.map;
+    this.tiles = options.map || [];
     this.tileSize = options.tileSize;
     this.exponentOfTwo = getClosestExponentOfTwo(options.tileSize);
-    this.atlas = options.atlas;
+    this.tileConfigs = options.tileConfigs;
   }
 
-  update(delta: number): void {}
-
-  render(graphics: PIXI.Graphics): void {
-    // Note: this is an inefficient way to draw the tilemap,
-    // but it works for now so I'm not going to optimize it until
-    // its a problem.
-
-    graphics.lineStyle(0);
-
-    for (let row = 0; row < this.tiles.length; row++) {
-      const rowTiles = this.tiles[row];
-      for (let col = 0; col < rowTiles.length; col++) {
-        const tileNum = rowTiles[col];
-        const x = col * this.tileSize;
-        const y = row * this.tileSize;
-
-        const details = this.atlas.get(tileNum);
-
-        if (details) {
-          graphics.beginTextureFill({texture: details.texture});
-          graphics.drawRect(x, y, this.tileSize, this.tileSize);
-          graphics.endFill();
-        }
-      }
-    }
+  public setMap(map: number[][]) {
+    this.tiles = map;
   }
 
   public getSolidTileDetailsInRegion(region: Region) {
@@ -112,8 +105,28 @@ export class TileMap {
     return tiles;
   }
 
+  /**
+   * Seralizes internal state for saving.
+   */
+  public seralize(): SerializedTileMap {
+    return {
+      tiles: this.tiles,
+      tileConfigs: this.tileConfigs,
+      tileSize: this.tileSize,
+    };
+  }
+
+  /**
+   * Sets internal state from a serliazed tile map.
+   */
+  public deserialize(data: SerializedTileMap) {
+    this.tiles = data.tiles;
+    this.tileConfigs = data.tileConfigs;
+    this.tileSize = data.tileSize;
+  }
+
   private isSolid(id: number) {
-    const config = this.atlas.get(id);
+    const config = this.tileConfigs[id];
     return !!config && config.isSolid;
   }
 
@@ -183,4 +196,13 @@ export interface TileDetails {
     e: boolean;
     s: boolean;
   };
+}
+
+/**
+ * A serialized form of the tilemap that can be sent over the network.
+ */
+export interface SerializedTileMap {
+  tiles: number[][];
+  tileSize: number;
+  tileConfigs: TileConfigs;
 }

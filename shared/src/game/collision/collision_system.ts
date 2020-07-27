@@ -1,8 +1,13 @@
 import {Entity, System} from 'ecsy';
 import {Physics, Position} from '../components';
 import {Region} from '../models';
-import {regionsCollide, seperateEntities} from './collisions';
+import {
+  regionsCollide,
+  seperateEntities,
+  sepearteEntityFromTile,
+} from './collisions';
 import {SpatialHash} from './spatial_hash';
+import {TileMapState} from '../tiles/tile_map_state';
 
 /**
  * Keeps track of the objects in the game world and resolves collisions.
@@ -17,6 +22,9 @@ export class CollisionSystem extends System {
     moved: {
       components: [Position],
       listen: {changed: true},
+    },
+    tiles: {
+      components: [TileMapState],
     },
   };
 
@@ -45,6 +53,7 @@ export class CollisionSystem extends System {
   }
 
   private resolveCollisions() {
+    // Entity to Entity
     for (const entity of this.queries.moveable.results) {
       const p1 = entity.getComponent(Position);
       const others = this.query(p1);
@@ -61,14 +70,18 @@ export class CollisionSystem extends System {
       }
     }
 
-    for (const object of this.queries.moveable.results) {
-      // todo: renable once tilemap system setup.
-      // const tiles = this.world.tileMap.getSolidTileDetailsInRegion(object);
-      // for (const tile of tiles) {
-      //   if (regionsCollide(object, tile.region)) {
-      //     sepearteGameObjectFromTile(object, tile);
-      //   }
-      // }
+    // Entity to Tile
+    const tilesEntity = this.queries.tiles.results[0];
+    const tileMapState = tilesEntity.getComponent(TileMapState);
+    for (const entity of this.queries.moveable.results) {
+      const p = entity.getComponent(Position);
+      const tiles = tileMapState.map.getSolidTileDetailsInRegion(p);
+
+      for (const tile of tiles) {
+        if (regionsCollide(p, tile.region)) {
+          sepearteEntityFromTile(entity, tile);
+        }
+      }
     }
   }
 

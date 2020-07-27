@@ -82,13 +82,6 @@ export class NetworkReconciliationSystem extends System {
   private replayUnconfirmedActions(delta: number, time: number) {
     const state = this.getNetworkState();
     const unconfirmed = state.unconfirmedActions;
-    if (unconfirmed.length === 0) {
-      return;
-    }
-
-    if (unconfirmed.length > 2) {
-      console.log(unconfirmed.length);
-    }
 
     for (let i = 0; i < unconfirmed.length - 1; i++) {
       const playerControlSystem = this.world.getSystem(
