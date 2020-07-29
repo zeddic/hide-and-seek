@@ -40,7 +40,6 @@ export class RenderSystem extends System {
   }
 
   private createPlayerVisibilityMask() {
-    // Draw the shape of the mask as a graphic.
     const maskGraphic = new PIXI.Graphics();
     maskGraphic.beginFill(0xff0000, 1);
     maskGraphic.lineStyle(2, 0xff0000, 1);
