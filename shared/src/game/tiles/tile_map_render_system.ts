@@ -1,6 +1,6 @@
 import {System, World, Attributes} from 'ecsy';
 import {TileMapState} from './tile_map_state';
-import {TileMap, TileMapOptions} from './tile_map';
+import * as PIXI from 'pixi.js';
 
 /**
  * Settings that describe how a single tile should be rendered.
@@ -29,7 +29,10 @@ export class TileMapRenderSystem extends System {
 
   constructor(world: World, attributes: Attributes) {
     super(world);
-    this.graphics = attributes.graphics;
+    const container = attributes.container as PIXI.Container;
+
+    this.graphics = new PIXI.Graphics();
+    container.addChild(this.graphics);
 
     const palette = attributes.palette as TilePalette;
     const loader = attributes.loader as PIXI.Loader;
@@ -67,6 +70,7 @@ export class TileMapRenderSystem extends System {
     // but it works for now so I'm not going to optimize it until
     // its a problem.
 
+    graphics.clear();
     graphics.lineStyle(0);
 
     for (let row = 0; row < tiles.length; row++) {

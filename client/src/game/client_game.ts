@@ -22,6 +22,7 @@ import {
   TILE_MAP_BASE_OPTIONS,
   TILE_MAP_PALETTE,
 } from 'lancer-shared/lib/game/constants';
+import {RenderState} from './render_state';
 
 /**
  * The number of milliseconds that should be simulated in each update
@@ -43,10 +44,12 @@ PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
  */
 export class ClientGame {
   private stats: Stats;
-  private graphics: PIXI.Graphics;
-  private renderer: PIXI.Renderer;
-  private stage: PIXI.Container;
-  private root: PIXI.Container;
+  // private graphics: PIXI.Graphics;
+  // private renderer: PIXI.Renderer;
+  // private stage: PIXI.Container;
+  // private root: PIXI.Container;
+
+  private renderState: RenderState;
   private destroyed = false;
   private world: ecsy.World;
 
@@ -56,26 +59,46 @@ export class ClientGame {
     this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
     document.body.appendChild(this.stats.dom);
 
-    // Setup PIXI Renderer
-    this.renderer = new PIXI.Renderer({
+    this.renderState = this.setupPIXI(el);
+
+    // // Setup PIXI Renderer
+    // this.renderer = new PIXI.Renderer({
+    //   width: 1000,
+    //   height: 800,
+    //   antialias: false,
+    // });
+    // document.body.appendChild(this.renderer.view);
+
+    // State
+    // this.root = new PIXI.Container();
+    // this.stage = new PIXI.Container();
+    // this.graphics = new PIXI.Graphics();
+    // this.root.addChild(this.stage);
+    // this.root.addChild(this.graphics);
+
+    this.world = new ecsy.World();
+  }
+
+  private setupPIXI(el: HTMLElement): RenderState {
+    const renderer = new PIXI.Renderer({
       width: 1000,
       height: 800,
       antialias: false,
     });
-    document.body.appendChild(this.renderer.view);
 
-    // State
-    this.root = new PIXI.Container();
-    this.stage = new PIXI.Container();
-    this.graphics = new PIXI.Graphics();
-    this.root.addChild(this.stage);
-    this.root.addChild(this.graphics);
-    this.world = new ecsy.World();
+    document.body.appendChild(renderer.view);
+
+    const root = new PIXI.Container();
+
+    const tilemap = new PIXI.Container();
+    root.addChild(tilemap);
+
+    return {renderer, root, tilemap};
   }
 
   public destroy() {
     // todo: close network connections here
-    this.renderer.destroy();
+    this.renderState.renderer.destroy();
     this.destroyed = true;
   }
 
@@ -101,13 +124,12 @@ export class ClientGame {
         .registerSystem(CollisionSystem)
         .registerSystem(WorldBoundsSystem)
         .registerSystem(TileMapRenderSystem, {
-          graphics: this.graphics,
+          container: this.renderState.tilemap,
           palette: TILE_MAP_PALETTE,
           loader,
         })
         .registerSystem(RenderSystem, {
-          graphics: this.graphics,
-          stage: this.stage,
+          renderState: this.renderState,
         });
 
       this.startGameLoop();
@@ -132,7 +154,7 @@ export class ClientGame {
       let updates = 0;
       while (accumlator > FIXED_UPDATE_STEP_MS) {
         // this.update(FIXED_UPDATE_STEP_MS / 1000);
-        this.graphics.clear();
+        // this.graphics.clear();
         this.world.execute(FIXED_UPDATE_STEP_MS, FIXED_UPDATE_STEP_MS / 1000);
         accumlator -= FIXED_UPDATE_STEP_MS;
         updates++;
@@ -143,15 +165,11 @@ export class ClientGame {
         }
       }
 
-      this.render();
+      this.renderState.renderer.render(this.renderState.root);
       lastTimestamp = now;
       this.stats.end();
     };
 
     requestAnimationFrame(step);
-  }
-
-  private render() {
-    this.renderer.render(this.root);
   }
 }

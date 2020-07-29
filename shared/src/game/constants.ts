@@ -18,6 +18,7 @@ export const TILE_MAP_BASE_OPTIONS: Partial<TileMapOptions> = {
   tileConfigs: {
     0: {isSolid: false},
     1: {isSolid: true},
+    2: {isSolid: false},
   },
 };
 

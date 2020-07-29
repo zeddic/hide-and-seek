@@ -4,6 +4,10 @@ import * as PIXI from 'pixi.js';
 import {getLoader} from './resources';
 import {Sprite} from './sprite';
 import {SpriteResources} from './sprite_resources';
+import {RenderState} from './render_state';
+import {LocalPlayerControlled} from './local_player_controlled';
+
+const PLAYER_VISIBILITY_RADIUS_PX = 150;
 
 export class RenderSystem extends System {
   static queries = {
@@ -11,15 +15,40 @@ export class RenderSystem extends System {
     removedSprites: {components: [Not(Sprite), SpriteResources]},
     sprites: {components: [Position, Sprite, SpriteResources]},
     others: {components: [Position, Not(Sprite)]},
+    player: {components: [Position, LocalPlayerControlled]},
   };
 
-  private readonly graphics: PIXI.Graphics;
-  private readonly stage: PIXI.Container;
+  private readonly renderState: RenderState;
+  private readonly spritesStage: PIXI.Container;
+  private readonly spritesGraphics: PIXI.Graphics;
+  private readonly visibilityMask: PIXI.Graphics; // PIXI.Sprite;
 
   constructor(world: World, attributes: Attributes) {
     super(world, attributes);
-    this.graphics = attributes.graphics;
-    this.stage = attributes.stage;
+
+    this.renderState = attributes.renderState;
+    const root = this.renderState.root;
+
+    this.spritesStage = new PIXI.Container();
+    root.addChild(this.spritesStage);
+
+    this.spritesGraphics = new PIXI.Graphics();
+    root.addChild(this.spritesGraphics);
+
+    this.visibilityMask = this.createPlayerVisibilityMask();
+    this.renderState.tilemap.mask = this.visibilityMask;
+    this.spritesStage.mask = this.visibilityMask;
+  }
+
+  private createPlayerVisibilityMask() {
+    // Draw the shape of the mask as a graphic.
+    const maskGraphic = new PIXI.Graphics();
+    maskGraphic.beginFill(0xff0000, 1);
+    maskGraphic.lineStyle(2, 0xff0000, 1);
+    maskGraphic.drawCircle(0, 0, PLAYER_VISIBILITY_RADIUS_PX);
+
+    this.renderState.root.addChild(maskGraphic);
+    return maskGraphic;
   }
 
   execute(delta: number, time: number) {
@@ -27,19 +56,32 @@ export class RenderSystem extends System {
 
     this.handleSpriteResources();
 
-    this.graphics.lineStyle(2, 0xff0000, 1);
+    const graphics = this.spritesGraphics;
+
+    graphics.clear();
+    graphics.lineStyle(2, 0xff0000, 1);
 
     for (const entity of queries.sprites.results) {
       const p = entity.getComponent(Position);
       const sprite = entity.getComponent(SpriteResources);
-      // this.graphics.drawRect(p.left, p.top, p.width, p.height);
       this.syncSpritePosition(p, sprite);
     }
 
     for (const entity of queries.others.results) {
       const p = entity.getComponent(Position);
-      this.graphics.drawRect(p.left, p.top, p.width, p.height);
+      graphics.drawRect(p.left, p.top, p.width, p.height);
     }
+
+    this.updateMask();
+  }
+
+  private updateMask() {
+    const player = this.queries.player.results[0];
+    if (!player) return;
+
+    const p = player.getComponent(Position);
+    this.visibilityMask.x = p.x;
+    this.visibilityMask.y = p.y;
   }
 
   private handleSpriteResources() {
@@ -54,7 +96,7 @@ export class RenderSystem extends System {
       sprite.anchor.y = 0.5;
       sprite.scale.x = 1.2; // temporary, read from component
       sprite.scale.y = 1.2;
-      this.stage.addChild(sprite);
+      this.spritesStage.addChild(sprite);
       entity.addComponent(SpriteResources, {sprite});
     }
 
