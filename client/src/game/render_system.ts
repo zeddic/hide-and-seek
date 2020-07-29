@@ -25,7 +25,6 @@ export class RenderSystem extends System {
 
   constructor(world: World, attributes: Attributes) {
     super(world, attributes);
-
     this.renderState = attributes.renderState;
     const root = this.renderState.root;
 

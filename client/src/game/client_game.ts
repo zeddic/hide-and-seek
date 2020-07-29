@@ -60,22 +60,6 @@ export class ClientGame {
     document.body.appendChild(this.stats.dom);
 
     this.renderState = this.setupPIXI(el);
-
-    // // Setup PIXI Renderer
-    // this.renderer = new PIXI.Renderer({
-    //   width: 1000,
-    //   height: 800,
-    //   antialias: false,
-    // });
-    // document.body.appendChild(this.renderer.view);
-
-    // State
-    // this.root = new PIXI.Container();
-    // this.stage = new PIXI.Container();
-    // this.graphics = new PIXI.Graphics();
-    // this.root.addChild(this.stage);
-    // this.root.addChild(this.graphics);
-
     this.world = new ecsy.World();
   }
 
@@ -86,10 +70,9 @@ export class ClientGame {
       antialias: false,
     });
 
-    document.body.appendChild(renderer.view);
+    el.appendChild(renderer.view);
 
     const root = new PIXI.Container();
-
     const tilemap = new PIXI.Container();
     root.addChild(tilemap);
 
@@ -153,8 +136,6 @@ export class ClientGame {
 
       let updates = 0;
       while (accumlator > FIXED_UPDATE_STEP_MS) {
-        // this.update(FIXED_UPDATE_STEP_MS / 1000);
-        // this.graphics.clear();
         this.world.execute(FIXED_UPDATE_STEP_MS, FIXED_UPDATE_STEP_MS / 1000);
         accumlator -= FIXED_UPDATE_STEP_MS;
         updates++;
