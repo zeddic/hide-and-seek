@@ -1,5 +1,5 @@
 import {Attributes, Entity, System, World} from 'ecsy';
-import {Physics, Position} from 'lancer-shared/lib/game/components';
+import {Physics, Position} from 'lancer-shared/lib/components';
 import {InitGameMessage, StateUpdateMessage} from 'lancer-shared/lib/messages';
 import {ActionState} from './action_system';
 import {ClientSocketService} from './client_socket_service';
@@ -8,7 +8,7 @@ import {NetworkState} from './network_state';
 import {RemotePlayerControlled} from './remote_player_controlled';
 import {Image} from './resources';
 import {Sprite} from './sprite';
-import {TileMapSystem} from 'lancer-shared/lib/game/tiles/tile_map_system';
+import {TileMapSystem} from 'lancer-shared/lib/tiles/tile_map_system';
 
 /**
  * A system that recieves state syncs game state between the client and

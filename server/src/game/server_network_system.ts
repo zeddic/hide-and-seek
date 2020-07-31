@@ -1,7 +1,7 @@
 import {System, World, Attributes, Entity} from 'ecsy';
-// import {Physics, Position} from 'lancer-shared/lib/game/components';
-import {Physics} from 'lancer-shared/lib/game/components/physics';
-import {Position} from 'lancer-shared/lib/game/components/position';
+// import {Physics, Position} from 'lancer-shared/lib/components';
+import {Physics} from 'lancer-shared/lib/components/physics';
+import {Position} from 'lancer-shared/lib/components/position';
 import {
   SocketService,
   OnPlayerActionEvent,
@@ -10,7 +10,7 @@ import {
 } from './socket_service';
 import {EntityUpdate} from 'lancer-shared/lib/messages';
 import {RemotePlayerControlled} from './remote_player_controlled';
-import {TileMapSystem} from 'lancer-shared/lib/game/tiles/tile_map_system';
+import {TileMapSystem} from 'lancer-shared/lib/tiles/tile_map_system';
 
 interface Player {
   id: number;

@@ -1,10 +1,10 @@
 import {System} from 'ecsy';
-import {PhysicsSystem} from 'lancer-shared/lib/game/physics_system';
+import {PhysicsSystem} from 'lancer-shared/lib/physics_system';
 import {ActionState} from './action_system';
 import {PlayerControlSystem} from './player_control_system';
 import {NetworkState} from './network_state';
-import {WorldBoundsSystem} from 'lancer-shared/lib/game/world_bounds_system';
-import {CollisionSystem} from 'lancer-shared/lib/game/collision/collision_system';
+import {WorldBoundsSystem} from 'lancer-shared/lib/world_bounds_system';
+import {CollisionSystem} from 'lancer-shared/lib/collision/collision_system';
 
 /**
  * A system that reconciles local user input (which the client optimistically

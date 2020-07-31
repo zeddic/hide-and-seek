@@ -1,5 +1,5 @@
 import {Component, Types} from 'ecsy';
-import {ActionSnapshot} from 'lancer-shared/lib/game/actions';
+import {ActionSnapshot} from 'lancer-shared/lib/actions';
 
 /**
  * System state related to network the network connection.

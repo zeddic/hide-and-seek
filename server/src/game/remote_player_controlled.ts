@@ -1,5 +1,5 @@
 import {System, Component, Types} from 'ecsy';
-import {ActionSnapshot} from 'lancer-shared/lib/game/actions';
+import {ActionSnapshot} from 'lancer-shared/lib/actions';
 
 /**
  * Contains information about an entity that is being remotely controlled

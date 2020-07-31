@@ -1,9 +1,9 @@
 import {System} from 'ecsy';
-import {Physics} from 'lancer-shared/lib/game/components';
+import {Physics} from 'lancer-shared/lib/components';
 import {LocalPlayerControlled} from './local_player_controlled';
 import {ActionState} from './action_system';
-import {ActionActiveMap} from 'lancer-shared/lib/game/actions';
-import {PLAYER_SPEED} from 'lancer-shared/lib/game/constants';
+import {ActionActiveMap} from 'lancer-shared/lib/actions';
+import {PLAYER_SPEED} from 'lancer-shared/lib/constants';
 import {RemotePlayerControlled} from './remote_player_controlled';
 
 /**

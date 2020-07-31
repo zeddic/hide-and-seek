@@ -1,5 +1,5 @@
 import {Attributes, Not, System, World} from 'ecsy';
-import {Position} from 'lancer-shared/lib/game/components';
+import {Position} from 'lancer-shared/lib/components';
 import * as PIXI from 'pixi.js';
 import {getLoader} from './resources';
 import {Sprite} from './sprite';

@@ -5,7 +5,7 @@ import {
   ActionSnapshot,
   ActionActiveMap,
   KNOWN_ACTIONS,
-} from 'lancer-shared/lib/game/actions';
+} from 'lancer-shared/lib/actions';
 
 /**
  * Singleton state for the ActionSystem.

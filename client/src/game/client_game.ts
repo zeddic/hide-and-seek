@@ -1,7 +1,7 @@
 import * as ecsy from 'ecsy';
-import {PhysicsSystem} from 'lancer-shared/lib/game/physics_system';
-import {Position, Physics} from 'lancer-shared/lib/game/components';
-import {WorldBoundsSystem} from 'lancer-shared/lib/game/world_bounds_system';
+import {PhysicsSystem} from 'lancer-shared/lib/physics_system';
+import {Position, Physics} from 'lancer-shared/lib/components';
+import {WorldBoundsSystem} from 'lancer-shared/lib/world_bounds_system';
 import * as PIXI from 'pixi.js';
 import Stats from 'stats.js';
 import {ActionSystem} from './action_system';
@@ -14,14 +14,14 @@ import {NetworkReconciliationSystem} from './network_reconciliation_system';
 import {createGameLoader} from './resources';
 import {Sprite} from './sprite';
 import {SpriteResources} from './sprite_resources';
-import {CollisionSystem} from 'lancer-shared/lib/game/collision/collision_system';
+import {CollisionSystem} from 'lancer-shared/lib/collision/collision_system';
 import {RemotePlayerControlled} from './remote_player_controlled';
-import {TileMapSystem} from 'lancer-shared/lib/game/tiles/tile_map_system';
-import {TileMapRenderSystem} from 'lancer-shared/lib/game/tiles/tile_map_render_system';
+import {TileMapSystem} from 'lancer-shared/lib/tiles/tile_map_system';
+import {TileMapRenderSystem} from 'lancer-shared/lib/tiles/tile_map_render_system';
 import {
   TILE_MAP_BASE_OPTIONS,
   TILE_MAP_PALETTE,
-} from 'lancer-shared/lib/game/constants';
+} from 'lancer-shared/lib/constants';
 import {RenderState} from './render_state';
 
 /**

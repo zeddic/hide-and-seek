@@ -1,5 +1,5 @@
-import {ActionSnapshot} from './game/actions';
-import {SerializedTileMap} from './game/tiles/tile_map';
+import {ActionSnapshot} from './actions';
+import {SerializedTileMap} from './tiles/tile_map';
 
 export enum MessageType {
   CONNECT = 'connect',

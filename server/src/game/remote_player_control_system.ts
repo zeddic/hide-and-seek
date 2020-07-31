@@ -1,7 +1,7 @@
 import {System} from 'ecsy';
 import {RemotePlayerControlled} from './remote_player_controlled';
-import {Physics} from 'lancer-shared/lib/game/components';
-import {PLAYER_SPEED} from 'lancer-shared/lib/game/constants';
+import {Physics} from 'lancer-shared/lib/components';
+import {PLAYER_SPEED} from 'lancer-shared/lib/constants';
 
 const MAX_INPUT_QUEUE_SIZE = 4;
 

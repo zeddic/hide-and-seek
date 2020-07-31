@@ -1,19 +1,19 @@
 import {World} from 'ecsy';
-import {Physics} from 'lancer-shared/lib/game/components/physics';
-import {Position} from 'lancer-shared/lib/game/components/position';
-import {PhysicsSystem} from 'lancer-shared/lib/game/physics_system';
-import {WorldBoundsSystem} from 'lancer-shared/lib/game/world_bounds_system';
-import {createFixedTimestepFn} from 'lancer-shared/lib/game/util/fixed_timestep';
+import {Physics} from 'lancer-shared/lib/components/physics';
+import {Position} from 'lancer-shared/lib/components/position';
+import {PhysicsSystem} from 'lancer-shared/lib/physics_system';
+import {WorldBoundsSystem} from 'lancer-shared/lib/world_bounds_system';
+import {createFixedTimestepFn} from 'lancer-shared/lib/util/fixed_timestep';
 import {performance} from 'perf_hooks';
 import {RemotePlayerControlled} from './remote_player_controlled';
 import {RemotePlayerControlSystem} from './remote_player_control_system';
 import {ServerNetworkSystem} from './server_network_system';
-import {CollisionSystem} from 'lancer-shared/lib/game/collision/collision_system';
-import {TileMapSystem} from 'lancer-shared/lib/game/tiles/tile_map_system';
+import {CollisionSystem} from 'lancer-shared/lib/collision/collision_system';
+import {TileMapSystem} from 'lancer-shared/lib/tiles/tile_map_system';
 import {
   TILE_MAP_BASE_OPTIONS,
   TILE_MAP_LEVEL_1,
-} from 'lancer-shared/lib/game/constants';
+} from 'lancer-shared/lib/constants';
 
 const UPDATES_PER_SECOND = 60;
 const MS_PER_UPDATE = 1000 / UPDATES_PER_SECOND;
