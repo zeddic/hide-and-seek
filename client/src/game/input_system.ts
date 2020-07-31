@@ -79,4 +79,13 @@ export enum Key {
   SHIFT = 16,
   SPACE = 32,
   COMMAND = 91,
+  KEY_PAD_1 = 97,
+  KEY_PAD_2 = 98,
+  KEY_PAD_3 = 99,
+  KEY_PAD_4 = 100,
+  KEY_PAD_5 = 101,
+  KEY_PAD_6 = 102,
+  KEY_PAD_7 = 103,
+  KEY_PAD_8 = 104,
+  KEY_PAD_9 = 105,
 }

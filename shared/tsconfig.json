@@ -10,7 +10,7 @@
     "outDir": "lib",
     "baseUrl": ".",
     "rootDir": "src",
-    // "composite": true,
+    "composite": true,
     "strict": true
   },
   "include": ["src/**/*"]

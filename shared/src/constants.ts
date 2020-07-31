@@ -8,7 +8,7 @@ import {TilePalette} from './tiles/tile_map_render_system';
 /**
  * Speed the user can move per frame.
  */
-export const PLAYER_SPEED = 200 / 1000;
+export const PLAYER_SPEED = 150 / 1000;
 
 /**
  * Generic settings for the tile map.

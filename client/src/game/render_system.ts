@@ -6,6 +6,7 @@ import {Sprite} from './sprite';
 import {SpriteResources} from './sprite_resources';
 import {RenderState} from './render_state';
 import {LocalPlayerControlled} from './local_player_controlled';
+import {GameState, GameStage} from 'lancer-shared';
 
 const PLAYER_VISIBILITY_RADIUS_PX = 150;
 
@@ -16,6 +17,7 @@ export class RenderSystem extends System {
     sprites: {components: [Position, Sprite, SpriteResources]},
     others: {components: [Position, Not(Sprite)]},
     player: {components: [Position, LocalPlayerControlled]},
+    gameState: {components: [GameState]},
   };
 
   private readonly renderState: RenderState;
@@ -35,8 +37,8 @@ export class RenderSystem extends System {
     root.addChild(this.spritesGraphics);
 
     this.visibilityMask = this.createPlayerVisibilityMask();
-    this.renderState.tilemap.mask = this.visibilityMask;
-    this.spritesStage.mask = this.visibilityMask;
+    this.visibilityMask.visible = false;
+    root.addChild(this.visibilityMask);
   }
 
   private createPlayerVisibilityMask() {
@@ -44,16 +46,14 @@ export class RenderSystem extends System {
     maskGraphic.beginFill(0xff0000, 1);
     maskGraphic.lineStyle(2, 0xff0000, 1);
     maskGraphic.drawCircle(0, 0, PLAYER_VISIBILITY_RADIUS_PX);
-
-    this.renderState.root.addChild(maskGraphic);
     return maskGraphic;
   }
 
   execute(delta: number, time: number) {
-    const queries = this.queries;
-
     this.handleSpriteResources();
+    this.handleGameState();
 
+    const queries = this.queries;
     const graphics = this.spritesGraphics;
 
     graphics.clear();
@@ -69,8 +69,23 @@ export class RenderSystem extends System {
       const p = entity.getComponent(Position);
       graphics.drawRect(p.left, p.top, p.width, p.height);
     }
+  }
 
-    this.updateMask();
+  private handleGameState() {
+    const gameState = this.getGameState();
+
+    if (gameState.stage === GameStage.PLAYING) {
+      if (!this.visibilityMask.visible) {
+        this.visibilityMask.visible = true;
+        this.renderState.tilemap.mask = this.visibilityMask;
+        this.spritesStage.mask = this.visibilityMask;
+      }
+      this.updateMask();
+    } else {
+      this.visibilityMask.visible = false;
+      this.renderState.tilemap.mask = null;
+      this.spritesStage.mask = null;
+    }
   }
 
   private updateMask() {
@@ -92,8 +107,8 @@ export class RenderSystem extends System {
       const sprite = new PIXI.Sprite(texture);
       sprite.anchor.x = 0.5;
       sprite.anchor.y = 0.5;
-      sprite.scale.x = 1.2; // temporary, read from component
-      sprite.scale.y = 1.2;
+      sprite.scale.x = 1.5; // temporary, read from component
+      sprite.scale.y = 1.5;
       this.spritesStage.addChild(sprite);
       entity.addComponent(SpriteResources, {sprite});
     }
@@ -108,5 +123,10 @@ export class RenderSystem extends System {
   private syncSpritePosition(p: Position, s: SpriteResources) {
     s.sprite.x = p.x;
     s.sprite.y = p.y;
+  }
+
+  private getGameState(): GameState {
+    const e = this.queries.gameState.results[0];
+    return e.getComponent(GameState);
   }
 }

@@ -10,6 +10,7 @@ import {RemotePlayerControlSystem} from './remote_player_control_system';
 import {ServerNetworkSystem} from './server_network_system';
 import {CollisionSystem} from 'lancer-shared/lib/collision/collision_system';
 import {TileMapSystem} from 'lancer-shared/lib/tiles/tile_map_system';
+import {GameState, Player} from 'lancer-shared';
 import {
   TILE_MAP_BASE_OPTIONS,
   TILE_MAP_LEVEL_1,
@@ -33,8 +34,10 @@ export class ServerGame {
   constructor() {
     this.world = new World();
     this.world
+      .registerComponent(GameState)
       .registerComponent(Position)
       .registerComponent(Physics)
+      .registerComponent(Player)
       .registerComponent(RemotePlayerControlled)
       .registerSystem(TileMapSystem, {options: TILE_MAP_OPTIONS})
       .registerSystem(ServerNetworkSystem)
@@ -59,6 +62,8 @@ export class ServerGame {
     //       y: randomInt(40, 200),
     //     });
     // }
+
+    this.world.createEntity().addComponent(GameState);
 
     this.startGameLoop();
   }

@@ -4,7 +4,9 @@
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "dependencies": {
+    "@types/lodash": "^4.14.158",
     "ecsy": "^0.3.2",
+    "lodash": "^4.17.19",
     "typescript": "^3.9.6"
   },
   "scripts": {

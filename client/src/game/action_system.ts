@@ -99,6 +99,9 @@ const KEY_BINDINGS = new Map<Action, Key>([
   [Action.RIGHT, Key.D],
   [Action.JUMP, Key.SPACE],
   [Action.HIDE, Key.Q],
+  [Action.ADMIN_PRE_GAME, Key.KEY_PAD_1],
+  [Action.ADMIN_START, Key.KEY_PAD_2],
+  [Action.ADMIN_PLAYING, Key.KEY_PAD_3],
 ]);
 
 /**

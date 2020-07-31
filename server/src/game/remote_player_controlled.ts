@@ -7,11 +7,6 @@ import {ActionSnapshot} from 'lancer-shared/lib/actions';
  */
 export class RemotePlayerControlled extends Component<RemotePlayerControlled> {
   /**
-   * The unique id of the remote player controlling the entity.
-   */
-  playerId = -1;
-
-  /**
    * A queue of action states that have been sent from the client.
    * Each entry contains any actions the user specified via
    * input (eg 'jump', 'move_left') and the frame number that the

@@ -8,6 +8,9 @@ export enum Action {
   DOWN = 'down',
   JUMP = 'jump',
   HIDE = 'hide',
+  ADMIN_PRE_GAME = 'admin_pre_game',
+  ADMIN_START = 'admin_start',
+  ADMIN_PLAYING = 'admin_playing',
 }
 
 /**

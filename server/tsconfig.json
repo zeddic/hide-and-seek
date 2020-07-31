@@ -10,6 +10,6 @@
     "skipLibCheck": true,
     "baseUrl": "."
   },
-  "include": ["src/**/*"]
-  // "references": [{"path": "../shared"}]
+  "include": ["src/**/*"],
+  "references": [{"path": "../shared"}]
 }

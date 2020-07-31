@@ -9,6 +9,7 @@ import {RemotePlayerControlled} from './remote_player_controlled';
 import {Image} from './resources';
 import {Sprite} from './sprite';
 import {TileMapSystem} from 'lancer-shared/lib/tiles/tile_map_system';
+import {GameState, Player} from 'lancer-shared';
 
 /**
  * A system that recieves state syncs game state between the client and
@@ -22,12 +23,9 @@ export class NetworkSystem extends System {
   private playerEntity?: Entity;
 
   static queries = {
-    network: {
-      components: [NetworkState],
-    },
-    action: {
-      components: [ActionState],
-    },
+    network: {components: [NetworkState]},
+    action: {components: [ActionState]},
+    gameState: {components: [GameState]},
   };
 
   constructor(world: World, attributes: Attributes) {
@@ -96,9 +94,14 @@ export class NetworkSystem extends System {
     const msg = this.lastStateUpdateMsg;
     this.lastStateUpdateMsg = undefined;
 
-    const state = this.getNetworkState();
-    state.frame = msg.frame;
-    state.lastConfirmedAction = msg.lastProcessedInput || -1;
+    const networkState = this.getNetworkState();
+    networkState.frame = msg.frame;
+    networkState.lastConfirmedAction = msg.lastProcessedInput || -1;
+
+    if (msg.gameState) {
+      const gameState = this.getGameState();
+      gameState.deserialize(msg.gameState);
+    }
 
     // Snap world state to the latest snapshot.
     this.seen.clear();
@@ -111,6 +114,8 @@ export class NetworkSystem extends System {
         : this.createEntity(id);
 
       // Ugh, do this properly.
+      // Ideally the network protocal should identify the components
+      // on the item.
       if (entity && entity !== this.playerEntity) {
         if (!entity.hasComponent(RemotePlayerControlled)) {
           entity.addComponent(RemotePlayerControlled);
@@ -120,6 +125,8 @@ export class NetworkSystem extends System {
 
       const p = entity?.getMutableComponent(Position)!;
       const m = entity?.getMutableComponent(Physics)!;
+      const player = entity?.getMutableComponent(Player)!;
+
       p.x = update.x;
       p.y = update.y;
       p.width = update.w;
@@ -129,6 +136,10 @@ export class NetworkSystem extends System {
       m.v.x = update.v.x;
       m.v.y = update.v.y;
       m.mass = update.m;
+
+      if (update.player) {
+        player.deserialize(update.player);
+      }
     }
 
     // delete items that no longer exist on the server
@@ -158,11 +169,17 @@ export class NetworkSystem extends System {
   private createEntity(id: number): Entity {
     const entity = this.world
       .createEntity()
+      .addComponent(Player)
       .addComponent(Position)
       .addComponent(Physics);
 
     this.entitiesById.set(id, entity);
     return entity;
+  }
+
+  getGameState(): GameState {
+    const e = this.queries.gameState.results[0];
+    return e.getMutableComponent(GameState);
   }
 
   getNetworkState(): NetworkState {

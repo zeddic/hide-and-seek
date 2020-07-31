@@ -1,5 +1,7 @@
 import {ActionSnapshot} from './actions';
 import {SerializedTileMap} from './tiles/tile_map';
+import {GameState, SerializedGameState} from './components/game_state';
+import {Player} from './components';
 
 export enum MessageType {
   CONNECT = 'connect',
@@ -34,6 +36,7 @@ export interface StateUpdateMessage {
   frame: number;
   updates: EntityUpdate[];
   lastProcessedInput?: number;
+  gameState?: SerializedGameState;
 }
 
 export interface EntityUpdate {
@@ -51,4 +54,5 @@ export interface EntityUpdate {
     y: number;
   };
   m: number;
+  player?: Player;
 }

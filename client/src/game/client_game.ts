@@ -18,6 +18,7 @@ import {CollisionSystem} from 'lancer-shared/lib/collision/collision_system';
 import {RemotePlayerControlled} from './remote_player_controlled';
 import {TileMapSystem} from 'lancer-shared/lib/tiles/tile_map_system';
 import {TileMapRenderSystem} from 'lancer-shared/lib/tiles/tile_map_render_system';
+import {GameState, GameStage, Player} from 'lancer-shared';
 import {
   TILE_MAP_BASE_OPTIONS,
   TILE_MAP_PALETTE,
@@ -44,11 +45,6 @@ PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
  */
 export class ClientGame {
   private stats: Stats;
-  // private graphics: PIXI.Graphics;
-  // private renderer: PIXI.Renderer;
-  // private stage: PIXI.Container;
-  // private root: PIXI.Container;
-
   private renderState: RenderState;
   private destroyed = false;
   private world: ecsy.World;
@@ -89,6 +85,8 @@ export class ClientGame {
     const loader = createGameLoader();
     loader.load(() => {
       this.world
+        .registerComponent(GameState)
+        .registerComponent(Player)
         .registerComponent(Position)
         .registerComponent(Physics)
         .registerComponent(LocalPlayerControlled)
@@ -114,6 +112,10 @@ export class ClientGame {
         .registerSystem(RenderSystem, {
           renderState: this.renderState,
         });
+
+      this.world
+        .createEntity()
+        .addComponent(GameState, {stage: GameStage.CONNECTING});
 
       this.startGameLoop();
     });
