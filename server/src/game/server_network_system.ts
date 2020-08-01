@@ -39,7 +39,7 @@ export class ServerNetworkSystem extends System {
     const playerId = e.player;
     const entity = this.world
       .createEntity(`player${playerId}`)
-      .addComponent(Position, {x: 100, y: 100, width: 30, height: 30})
+      .addComponent(Position, {x: 100, y: 100, width: 25, height: 25})
       .addComponent(Physics, {mass: 100})
       .addComponent(RemotePlayerControlled)
       .addComponent(Player, {
