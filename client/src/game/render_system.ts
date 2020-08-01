@@ -10,6 +10,11 @@ import {GameState, GameStage} from 'lancer-shared';
 
 const PLAYER_VISIBILITY_RADIUS_PX = 150;
 
+const TEXT_STYLE = new PIXI.TextStyle({
+  fill: 'white',
+  fontSize: 14,
+});
+
 export class RenderSystem extends System {
   static queries = {
     newSprites: {components: [Sprite, Not(SpriteResources)]},
@@ -22,8 +27,12 @@ export class RenderSystem extends System {
 
   private readonly renderState: RenderState;
   private readonly spritesStage: PIXI.Container;
+  private readonly overlayGraphics: PIXI.Graphics;
   private readonly spritesGraphics: PIXI.Graphics;
   private readonly visibilityMask: PIXI.Graphics; // PIXI.Sprite;
+
+  private readonly stageText: PIXI.Text;
+  private readonly countdownText: PIXI.Text;
 
   constructor(world: World, attributes: Attributes) {
     super(world, attributes);
@@ -34,11 +43,24 @@ export class RenderSystem extends System {
     root.addChild(this.spritesStage);
 
     this.spritesGraphics = new PIXI.Graphics();
-    root.addChild(this.spritesGraphics);
+    this.spritesStage.addChild(this.spritesGraphics);
+
+    this.overlayGraphics = new PIXI.Graphics();
+    root.addChild(this.overlayGraphics);
 
     this.visibilityMask = this.createPlayerVisibilityMask();
     this.visibilityMask.visible = false;
     root.addChild(this.visibilityMask);
+
+    this.stageText = new PIXI.Text('STAGE', TEXT_STYLE);
+    this.stageText.position.set(500, 0);
+    this.stageText.anchor.x = 0.5;
+    root.addChild(this.stageText);
+
+    this.countdownText = new PIXI.Text('-', TEXT_STYLE);
+    this.countdownText.position.set(500, 50);
+    this.countdownText.anchor.x = 0.5;
+    root.addChild(this.countdownText);
   }
 
   private createPlayerVisibilityMask() {
@@ -74,6 +96,19 @@ export class RenderSystem extends System {
   private handleGameState() {
     const gameState = this.getGameState();
 
+    this.stageText.text = gameState.stage;
+
+    // Only show the countdown while in counting down
+    if (gameState.stage === GameStage.COUNTING_DOWN) {
+      this.countdownText.visible = true;
+
+      const secs = Math.floor(gameState.countdown / 1000);
+      this.countdownText.text = String(secs);
+    } else {
+      this.countdownText.visible = false;
+    }
+
+    // Only use the visibility mask while the game is playing
     if (gameState.stage === GameStage.PLAYING) {
       if (!this.visibilityMask.visible) {
         this.visibilityMask.visible = true;

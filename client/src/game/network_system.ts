@@ -44,11 +44,26 @@ export class NetworkSystem extends System {
    */
   initSocket() {
     this.socketService.onInitGame().subscribe(msg => this.onInitGameMsg(msg));
+    this.socketService.onDisconnect().subscribe(() => this.onDisconnect());
     this.socketService
       .onStateUpdate()
       .subscribe(msg => this.onStateUpdateMsg(msg));
 
     this.socketService.connect();
+  }
+
+  private onDisconnect() {
+    if (this.playerEntity) {
+      this.playerEntity.remove();
+      this.playerEntity = undefined;
+    }
+
+    for (const entity of this.entitiesById.values()) {
+      entity.removeAllComponents();
+      entity.remove();
+    }
+
+    this.entitiesById.clear();
   }
 
   /**

@@ -11,6 +11,7 @@ import {
   OnPlayerActionEvent,
   SocketService,
 } from './socket_service';
+import {GameplaySystem} from './gameplay_system';
 
 export class ServerNetworkSystem extends System {
   static queries = {
@@ -81,13 +82,13 @@ export class ServerNetworkSystem extends System {
   }
 
   processAdminInput(e: OnPlayerActionEvent) {
+    const gameplay = this.world.getSystem(GameplaySystem) as GameplaySystem;
     if (e.msg.actions.admin_playing) {
-      this.getGameState(true).stage = GameStage.PLAYING;
+      gameplay.setGameStage(GameStage.PLAYING);
     } else if (e.msg.actions.admin_pre_game) {
-      this.getGameState(true).stage = GameStage.PRE_GAME;
+      gameplay.setGameStage(GameStage.PRE_GAME);
     } else if (e.msg.actions.admin_start) {
-      this.getGameState(true).stage = GameStage.COUNTING_DOWN;
-      this.getGameState(true).countdown = 10 * 1000;
+      gameplay.startGame();
     }
   }
 
@@ -130,7 +131,7 @@ export class ServerNetworkSystem extends System {
         v: {x: m.v.x, y: m.v.y},
         a: {x: m.a.x, y: m.a.y},
         m: m.mass,
-        player,
+        player: player.serialize(),
       };
 
       updates.push(update);

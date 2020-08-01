@@ -15,6 +15,7 @@ import {
   TILE_MAP_BASE_OPTIONS,
   TILE_MAP_LEVEL_1,
 } from 'lancer-shared/lib/constants';
+import {GameplaySystem} from './gameplay_system';
 
 const UPDATES_PER_SECOND = 60;
 const MS_PER_UPDATE = 1000 / UPDATES_PER_SECOND;
@@ -39,6 +40,7 @@ export class ServerGame {
       .registerComponent(Physics)
       .registerComponent(Player)
       .registerComponent(RemotePlayerControlled)
+      .registerSystem(GameplaySystem)
       .registerSystem(TileMapSystem, {options: TILE_MAP_OPTIONS})
       .registerSystem(ServerNetworkSystem)
       .registerSystem(RemotePlayerControlSystem)

@@ -10,13 +10,18 @@ export class Player extends Component<Player> {
   // but the object is so simple socket.io will translate it.
 
   serialize() {
-    return this;
+    return {
+      id: this.id,
+      name: this.name,
+      role: this.role,
+      isCaptured: this.isCaptured,
+    };
   }
 
-  deserialize(data: Player) {
+  deserialize(data: SerializedPlayer) {
     this.id = data.id;
     this.name = data.name;
-    this.role = data.role;
+    this.role = data.role as PlayerRole;
     this.isCaptured = data.isCaptured;
   }
 
@@ -26,6 +31,13 @@ export class Player extends Component<Player> {
     role: {type: Types.String},
     isCaptured: {type: Types.Boolean},
   };
+}
+
+export interface SerializedPlayer {
+  id: number;
+  name: string;
+  role: string;
+  isCaptured: boolean;
 }
 
 export enum PlayerRole {

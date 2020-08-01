@@ -7,7 +7,7 @@ export class GameState extends Component<GameState> {
   serialize(): SerializedGameState {
     return {
       stage: this.stage,
-      countdown: this.countdown,
+      countdown: Math.floor(this.countdown),
     };
   }
 

@@ -41,6 +41,10 @@ export class ClientSocketService {
     return fromEvent(this.socket, MessageType.INIT);
   }
 
+  public onDisconnect(): Observable<void> {
+    return fromEvent(this.socket, MessageType.DISCONNECT);
+  }
+
   // disconnect - used when unmounting
   public disconnect(): void {
     this.socket.disconnect();

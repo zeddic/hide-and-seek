@@ -11,6 +11,8 @@ export interface CountDownOption {
  *
  * TODO(scott): Make this a more generic tweening function between
  * two arbitrary values over a duration that takes a tweening function.
+ *
+ * TODO(scott): Should this be powered by a system and an entity instead?
  */
 export class CountDown {
   private duration: number;
@@ -54,6 +56,10 @@ export class CountDown {
    */
   isJustDone() {
     return this.justDone;
+  }
+
+  value() {
+    return this.current;
   }
 
   reset() {
