@@ -7,8 +7,10 @@ import {SpriteResources} from './sprite_resources';
 import {RenderState} from './render_state';
 import {LocalPlayerControlled} from './local_player_controlled';
 import {GameState, GameStage} from 'lancer-shared';
+import {Footprint} from './footprint';
 
 const PLAYER_VISIBILITY_RADIUS_PX = 150;
+const MAX_FOOTPRINT_RADIUS_PX = 50;
 
 const TEXT_STYLE = new PIXI.TextStyle({
   fill: 'white',
@@ -25,12 +27,13 @@ export class RenderSystem extends System {
     },
     others: {components: [Position, Not(Sprite)]},
     player: {components: [Position, LocalPlayerControlled]},
+    footprints: {components: [Position, Footprint]},
     gameState: {components: [GameState]},
   };
 
   private readonly renderState: RenderState;
   private readonly spritesStage: PIXI.Container;
-  private readonly overlayGraphics: PIXI.Graphics;
+  private readonly alwaysVisibleGraphics: PIXI.Graphics;
   private readonly spritesGraphics: PIXI.Graphics;
   private readonly visibilityMask: PIXI.Graphics;
   private readonly hideEverythingMask: PIXI.Graphics;
@@ -49,8 +52,8 @@ export class RenderSystem extends System {
     this.spritesGraphics = new PIXI.Graphics();
     this.spritesStage.addChild(this.spritesGraphics);
 
-    this.overlayGraphics = new PIXI.Graphics();
-    root.addChild(this.overlayGraphics);
+    this.alwaysVisibleGraphics = new PIXI.Graphics();
+    root.addChild(this.alwaysVisibleGraphics);
 
     this.visibilityMask = this.createPlayerVisibilityMask();
     this.visibilityMask.visible = false;
@@ -78,13 +81,15 @@ export class RenderSystem extends System {
   }
 
   execute(delta: number, time: number) {
+    this.alwaysVisibleGraphics.clear();
+    this.spritesGraphics.clear();
+
     this.handleSpriteResources();
     this.handleGameState();
 
     const queries = this.queries;
     const graphics = this.spritesGraphics;
 
-    graphics.clear();
     graphics.lineStyle(2, 0xff0000, 1);
 
     for (const entity of queries.sprites.results) {
@@ -94,6 +99,10 @@ export class RenderSystem extends System {
     for (const entity of queries.others.results) {
       const p = entity.getComponent(Position);
       graphics.drawRect(p.left, p.top, p.width, p.height);
+    }
+
+    for (const entity of queries.footprints.results) {
+      this.renderFootprint(entity);
     }
   }
 
@@ -171,6 +180,22 @@ export class RenderSystem extends System {
       const spriteResources = entity.getComponent(SpriteResources);
       spriteResources.sprite.texture = texture;
     }
+  }
+
+  private renderFootprint(entity: Entity) {
+    // todo: sprite more effecient?
+    const graphics = this.alwaysVisibleGraphics;
+    const position = entity.getComponent(Position);
+    const footprint = entity.getComponent(Footprint);
+
+    // radius starts small and grows big as the footprint ages.
+    const radius =
+      MAX_FOOTPRINT_RADIUS_PX -
+      MAX_FOOTPRINT_RADIUS_PX * footprint.percentLife();
+    const alpha = footprint.percentLife();
+
+    graphics.lineStyle(2, 0xff0000, alpha);
+    graphics.drawCircle(position.x, position.y, radius);
   }
 
   private syncSprite(entity: Entity) {

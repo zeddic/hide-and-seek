@@ -9,8 +9,8 @@ import {
 } from 'lancer-shared';
 import {Footprint} from './footprint';
 
-const TIME_BETWEEN_FOOTPRINT_SPAWNS_MS = 1000;
-const LIFE_OF_FOOTPRINT_MS = 5000;
+const TIME_BETWEEN_FOOTPRINT_SPAWNS_MS = 500;
+const LIFE_OF_FOOTPRINT_MS = 4000;
 
 /**
  * A system that spawns footprints behind players that are moving
