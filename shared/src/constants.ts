@@ -12,7 +12,7 @@ export const HIDER_SPEED = 150 / 1000;
 /**
  * Speed the seeker can move per frame.
  */
-export const SEEKER_SPEED = 200 / 1000;
+export const SEEKER_SPEED = 175 / 1000;
 
 /**
  * Generic settings for the tile map.
