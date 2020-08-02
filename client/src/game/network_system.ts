@@ -1,5 +1,5 @@
 import {Attributes, Entity, System, World} from 'ecsy';
-import {Physics, Position} from 'lancer-shared/lib/components';
+import {Physics, Position, PlayerRole} from 'lancer-shared/lib/components';
 import {InitGameMessage, StateUpdateMessage} from 'lancer-shared/lib/messages';
 import {ActionState} from './action_system';
 import {ClientSocketService} from './client_socket_service';
@@ -9,7 +9,7 @@ import {RemotePlayerControlled} from './remote_player_controlled';
 import {Image} from './resources';
 import {Sprite} from './sprite';
 import {TileMapSystem} from 'lancer-shared/lib/tiles/tile_map_system';
-import {GameState, Player} from 'lancer-shared';
+import {GameState, Player, Collides} from 'lancer-shared';
 
 /**
  * A system that recieves state syncs game state between the client and
@@ -141,6 +141,7 @@ export class NetworkSystem extends System {
       const p = entity?.getMutableComponent(Position)!;
       const m = entity?.getMutableComponent(Physics)!;
       const player = entity?.getMutableComponent(Player)!;
+      const sprite = entity?.getComponent(Sprite)!;
 
       p.x = update.x;
       p.y = update.y;
@@ -154,6 +155,18 @@ export class NetworkSystem extends System {
 
       if (update.player) {
         player.deserialize(update.player);
+      }
+
+      // todo: find a better place for this sync?
+      if (player.role === PlayerRole.SEEKER && sprite.image !== Image.DINO1) {
+        const sprite = entity?.getMutableComponent(Sprite)!;
+        sprite.image = Image.DINO1;
+      } else if (
+        player.role === PlayerRole.HIDER &&
+        sprite.image !== Image.DINO2
+      ) {
+        const sprite = entity?.getMutableComponent(Sprite)!;
+        sprite.image = Image.DINO2;
       }
     }
 
@@ -184,6 +197,7 @@ export class NetworkSystem extends System {
   private createEntity(id: number): Entity {
     const entity = this.world
       .createEntity()
+      .addComponent(Collides)
       .addComponent(Player)
       .addComponent(Position)
       .addComponent(Physics);

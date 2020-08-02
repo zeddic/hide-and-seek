@@ -1,5 +1,11 @@
 import {Attributes, Entity, System, World} from 'ecsy';
-import {GameState, Player, PlayerRole, GameStage} from 'lancer-shared';
+import {
+  GameState,
+  Player,
+  PlayerRole,
+  GameStage,
+  Collides,
+} from 'lancer-shared';
 import {Physics} from 'lancer-shared/lib/components/physics';
 import {Position} from 'lancer-shared/lib/components/position';
 import {EntityUpdate} from 'lancer-shared/lib/messages';
@@ -43,6 +49,7 @@ export class ServerNetworkSystem extends System {
       .addComponent(Position, {x: 100, y: 100, width: 25, height: 25})
       .addComponent(Physics, {mass: 100})
       .addComponent(RemotePlayerControlled)
+      .addComponent(Collides)
       .addComponent(Player, {
         id: playerId,
         name: `Player ${playerId}`,
@@ -131,7 +138,7 @@ export class ServerNetworkSystem extends System {
         v: {x: m.v.x, y: m.v.y},
         a: {x: m.a.x, y: m.a.y},
         m: m.mass,
-        player: player.serialize(),
+        player: player ? player.serialize() : undefined,
       };
 
       updates.push(update);

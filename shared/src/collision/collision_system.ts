@@ -1,4 +1,4 @@
-import {Entity, System} from 'ecsy';
+import {Entity, System, Not} from 'ecsy';
 import {Physics, Position} from '../components';
 import {Region} from '../models';
 import {
@@ -8,6 +8,7 @@ import {
 } from './collisions';
 import {SpatialHash} from './spatial_hash';
 import {TileMapState} from '../tiles/tile_map_state';
+import {Collides} from './collides';
 
 /**
  * Keeps track of the objects in the game world and resolves collisions.
@@ -16,11 +17,11 @@ import {TileMapState} from '../tiles/tile_map_state';
 export class CollisionSystem extends System {
   static queries = {
     moveable: {
-      components: [Position, Physics],
+      components: [Position, Physics, Collides],
       listen: {added: true, removed: true},
     },
     moved: {
-      components: [Position],
+      components: [Position, Physics, Collides],
       listen: {changed: true},
     },
     tiles: {
@@ -53,9 +54,17 @@ export class CollisionSystem extends System {
   }
 
   private resolveCollisions() {
+    // Reset colliding state
+    for (const entity of this.queries.moveable.results) {
+      const c = entity.getMutableComponent(Collides);
+      c.colliding.clear();
+    }
+
     // Entity to Entity
     for (const entity of this.queries.moveable.results) {
       const p1 = entity.getComponent(Position);
+      const c1 = entity.getMutableComponent(Collides);
+
       const others = this.query(p1);
       for (const other of others) {
         if (entity === other) {
@@ -63,8 +72,11 @@ export class CollisionSystem extends System {
         }
 
         const p2 = other.getComponent(Position);
+        const c2 = other.getComponent(Collides);
 
         if (regionsCollide(p1, p2)) {
+          c1.colliding.add(other);
+          c2.colliding.add(entity);
           seperateEntities(entity, other);
         }
       }

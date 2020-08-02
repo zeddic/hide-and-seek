@@ -19,7 +19,10 @@ export class RenderSystem extends System {
   static queries = {
     newSprites: {components: [Sprite, Not(SpriteResources)]},
     removedSprites: {components: [Not(Sprite), SpriteResources]},
-    sprites: {components: [Position, Sprite, SpriteResources]},
+    sprites: {
+      components: [Position, Sprite, SpriteResources],
+      listen: {changed: [Sprite]},
+    },
     others: {components: [Position, Not(Sprite)]},
     player: {components: [Position, LocalPlayerControlled]},
     gameState: {components: [GameState]},
@@ -152,6 +155,13 @@ export class RenderSystem extends System {
       const data = entity.getComponent(SpriteResources);
       data.sprite.destroy();
       entity.removeComponent(SpriteResources);
+    }
+
+    for (const entity of queries.sprites.changed!.values()) {
+      const sprite = entity.getComponent(Sprite);
+      const texture = loader.resources[sprite.image]!.texture;
+      const spriteResources = entity.getComponent(SpriteResources);
+      spriteResources.sprite.texture = texture;
     }
   }
 

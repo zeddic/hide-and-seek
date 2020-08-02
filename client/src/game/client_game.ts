@@ -18,7 +18,7 @@ import {CollisionSystem} from 'lancer-shared/lib/collision/collision_system';
 import {RemotePlayerControlled} from './remote_player_controlled';
 import {TileMapSystem} from 'lancer-shared/lib/tiles/tile_map_system';
 import {TileMapRenderSystem} from 'lancer-shared/lib/tiles/tile_map_render_system';
-import {GameState, GameStage, Player} from 'lancer-shared';
+import {GameState, GameStage, Player, Collides} from 'lancer-shared';
 import {
   TILE_MAP_BASE_OPTIONS,
   TILE_MAP_PALETTE,
@@ -89,6 +89,7 @@ export class ClientGame {
         .registerComponent(Player)
         .registerComponent(Position)
         .registerComponent(Physics)
+        .registerComponent(Collides, false)
         .registerComponent(LocalPlayerControlled)
         .registerComponent(RemotePlayerControlled)
         .registerComponent(Sprite)

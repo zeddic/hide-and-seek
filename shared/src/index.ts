@@ -1,4 +1,5 @@
 export * from './actions';
+export * from './collision';
 export * from './components';
 export * from './constants';
 export * from './ecsy_types';

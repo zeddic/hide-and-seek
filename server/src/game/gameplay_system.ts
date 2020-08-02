@@ -58,7 +58,7 @@ export class GameplaySystem extends System {
   startGame() {
     const players = this.queries.players.results;
 
-    const newSeeker = players[randomInt(0, players.length - 1)];
+    const newSeeker = players[randomInt(0, players.length)];
     for (const entity of players) {
       const player = entity.getMutableComponent(Player);
       player.isCaptured = false;
