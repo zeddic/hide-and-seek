@@ -68,7 +68,7 @@ export class ActionSystem extends System {
       const keyBinding = KEY_BINDINGS.get(action);
 
       if (!keyBinding) {
-        console.warn(`No key binding set for ${keyBinding}`);
+        console.warn(`No key binding set for ${action}`);
         continue;
       }
 
@@ -97,8 +97,9 @@ const KEY_BINDINGS = new Map<Action, Key>([
   [Action.UP, Key.W],
   [Action.DOWN, Key.S],
   [Action.RIGHT, Key.D],
-  [Action.JUMP, Key.SPACE],
   [Action.HIDE, Key.Q],
+  [Action.JUMP, Key.K], // unused, remove
+  [Action.SNEAK, Key.SPACE],
   [Action.ADMIN_PRE_GAME, Key.KEY_PAD_1],
   [Action.ADMIN_START, Key.KEY_PAD_2],
   [Action.ADMIN_PLAYING, Key.KEY_PAD_3],
@@ -112,4 +113,5 @@ const ACTIONS_TRIGGERED_WHILE_KEY_DOWN = new Set<Action>([
   Action.RIGHT,
   Action.UP,
   Action.DOWN,
+  Action.SNEAK,
 ]);

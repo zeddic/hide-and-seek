@@ -1,9 +1,9 @@
 import {System} from 'ecsy';
-import {Physics, Player, PlayerRole} from 'lancer-shared/lib/components';
-import {LocalPlayerControlled} from './local_player_controlled';
-import {ActionState} from './action_system';
+import {getPlayerSpeed} from 'lancer-shared';
 import {ActionActiveMap} from 'lancer-shared/lib/actions';
-import {SEEKER_SPEED, HIDER_SPEED} from 'lancer-shared/lib/constants';
+import {Physics, Player} from 'lancer-shared/lib/components';
+import {ActionState} from './action_system';
+import {LocalPlayerControlled} from './local_player_controlled';
 import {RemotePlayerControlled} from './remote_player_controlled';
 
 /**
@@ -34,8 +34,8 @@ export class PlayerControlSystem extends System {
     for (const entity of entities) {
       const movement = entity.getMutableComponent(Physics);
       const player = entity.getComponent(Player);
-      const speed =
-        player?.role === PlayerRole.SEEKER ? SEEKER_SPEED : HIDER_SPEED;
+      const isSneeking = !!actions.sneek;
+      const speed = getPlayerSpeed(player, {isSneeking});
 
       movement.v.set(0, 0);
 

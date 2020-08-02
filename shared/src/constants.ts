@@ -8,11 +8,13 @@ import {TilePalette} from './tiles/tile_map_render_system';
 /**
  * Speed the user can move per frame . */
 export const HIDER_SPEED = 150 / 1000;
+export const HIDER_SNEEK_SPEED = 100 / 1000;
 
 /**
  * Speed the seeker can move per frame.
  */
 export const SEEKER_SPEED = 175 / 1000;
+export const SEEKER_SNEEK_SPEED = 140 / 1000;
 
 /**
  * Generic settings for the tile map.

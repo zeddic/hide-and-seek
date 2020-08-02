@@ -6,11 +6,13 @@ import {
   PlayerRole,
   SEEKER_SPEED,
   HIDER_SPEED,
+  GameState,
+  GameStage,
 } from 'lancer-shared';
 import {Footprint} from './footprint';
 
-const TIME_BETWEEN_FOOTPRINT_SPAWNS_MS = 500;
-const LIFE_OF_FOOTPRINT_MS = 4000;
+const TIME_BETWEEN_FOOTPRINT_SPAWNS_MS = 100;
+const LIFE_OF_FOOTPRINT_MS = 2000;
 
 /**
  * A system that spawns footprints behind players that are moving
@@ -20,6 +22,7 @@ export class FootprintSystem extends System {
   static queries = {
     players: {components: [Position, Physics, Player]},
     footprints: {components: [Position, Footprint]},
+    gameState: {components: [GameState]},
   };
 
   /**
@@ -31,6 +34,7 @@ export class FootprintSystem extends System {
     // Spawn footprints when players move too quickly.
     for (const entity of this.queries.players.results) {
       if (
+        this.isGameBeingPlayed() &&
         this.isMovingTooFast(entity) &&
         this.hasNotSpawnedFootprintRecently(entity)
       ) {
@@ -47,6 +51,11 @@ export class FootprintSystem extends System {
         entity.remove();
       }
     }
+  }
+
+  isGameBeingPlayed(): boolean {
+    const state = this.getGameState();
+    return state.stage === GameStage.PLAYING;
   }
 
   hasNotSpawnedFootprintRecently(entity: Entity) {
@@ -83,5 +92,10 @@ export class FootprintSystem extends System {
     const maxSpeedSq = maxSpeed * maxSpeed;
 
     return physics.v.lengthSq() >= maxSpeedSq;
+  }
+
+  private getGameState(): GameState {
+    const e = this.queries.gameState.results[0];
+    return e.getComponent(GameState);
   }
 }

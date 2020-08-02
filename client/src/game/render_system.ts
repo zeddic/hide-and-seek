@@ -10,7 +10,7 @@ import {GameState, GameStage} from 'lancer-shared';
 import {Footprint} from './footprint';
 
 const PLAYER_VISIBILITY_RADIUS_PX = 150;
-const MAX_FOOTPRINT_RADIUS_PX = 50;
+const MAX_FOOTPRINT_RADIUS_PX = 20;
 
 const TEXT_STYLE = new PIXI.TextStyle({
   fill: 'white',
