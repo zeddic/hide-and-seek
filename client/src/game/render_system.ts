@@ -21,7 +21,7 @@ export class RenderSystem extends System {
     removedSprites: {components: [Not(Sprite), SpriteResources]},
     sprites: {
       components: [Position, Sprite, SpriteResources],
-      listen: {changed: [Sprite]},
+      listen: {changed: true}, // changed: [Sprite]
     },
     others: {components: [Position, Not(Sprite)]},
     player: {components: [Position, LocalPlayerControlled]},
