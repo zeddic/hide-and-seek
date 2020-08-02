@@ -24,6 +24,8 @@ import {
   TILE_MAP_PALETTE,
 } from 'lancer-shared/lib/constants';
 import {RenderState} from './render_state';
+import {Footprint} from './footprint';
+import {FootprintSystem} from './footprint_system';
 
 /**
  * The number of milliseconds that should be simulated in each update
@@ -87,6 +89,7 @@ export class ClientGame {
       this.world
         .registerComponent(GameState)
         .registerComponent(Player)
+        .registerComponent(Footprint)
         .registerComponent(Position)
         .registerComponent(Physics)
         .registerComponent(Collides, false)
@@ -99,6 +102,7 @@ export class ClientGame {
         })
         .registerSystem(InputSystem)
         .registerSystem(ActionSystem)
+        .registerSystem(FootprintSystem)
         .registerSystem(NetworkSystem)
         .registerSystem(NetworkReconciliationSystem)
         .registerSystem(PlayerControlSystem)
@@ -139,7 +143,10 @@ export class ClientGame {
 
       let updates = 0;
       while (accumlator > FIXED_UPDATE_STEP_MS) {
-        this.world.execute(FIXED_UPDATE_STEP_MS, FIXED_UPDATE_STEP_MS / 1000);
+        this.world.execute(
+          FIXED_UPDATE_STEP_MS, // delta
+          now + updates * FIXED_UPDATE_STEP_MS // time
+        );
         accumlator -= FIXED_UPDATE_STEP_MS;
         updates++;
 

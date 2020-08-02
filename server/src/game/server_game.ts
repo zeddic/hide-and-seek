@@ -87,7 +87,7 @@ export class ServerGame {
 
       const now = performance.now();
       const delta = now - lastTimestamp;
-      fixedUpdatedFn(delta, delta / 1000);
+      fixedUpdatedFn(delta, now);
       lastTimestamp = now;
     };
 

@@ -40,6 +40,14 @@ export class Vector {
     return this.x * other.x + this.y * other.y;
   }
 
+  public length() {
+    return Math.sqrt(this.x * this.x + this.y * this.y);
+  }
+
+  public lengthSq() {
+    return this.x * this.x + this.y * this.y;
+  }
+
   /**
    * Copy the values of another vector into this instance.
    */
