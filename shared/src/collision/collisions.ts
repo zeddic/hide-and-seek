@@ -223,7 +223,6 @@ function resolveObjectVsObject(details: CollisionDetails) {
     const deltaV2 = vectors.multiplyScalar(deltaV, massShares.mass2Percent);
     m1.v.subtract(deltaV1);
     m2.v.add(deltaV2);
-    return;
   }
 
   // UPDATE POSITION

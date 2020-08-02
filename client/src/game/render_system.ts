@@ -1,5 +1,5 @@
-import {Attributes, Not, System, World} from 'ecsy';
-import {Position} from 'lancer-shared/lib/components';
+import {Attributes, Not, System, World, Entity} from 'ecsy';
+import {Position, Player, PlayerRole} from 'lancer-shared/lib/components';
 import * as PIXI from 'pixi.js';
 import {getLoader} from './resources';
 import {Sprite} from './sprite';
@@ -32,7 +32,8 @@ export class RenderSystem extends System {
   private readonly spritesStage: PIXI.Container;
   private readonly overlayGraphics: PIXI.Graphics;
   private readonly spritesGraphics: PIXI.Graphics;
-  private readonly visibilityMask: PIXI.Graphics; // PIXI.Sprite;
+  private readonly visibilityMask: PIXI.Graphics;
+  private readonly hideEverythingMask: PIXI.Graphics;
 
   private readonly stageText: PIXI.Text;
   private readonly countdownText: PIXI.Text;
@@ -54,6 +55,8 @@ export class RenderSystem extends System {
     this.visibilityMask = this.createPlayerVisibilityMask();
     this.visibilityMask.visible = false;
     root.addChild(this.visibilityMask);
+
+    this.hideEverythingMask = new PIXI.Graphics();
 
     this.stageText = new PIXI.Text('STAGE', TEXT_STYLE);
     this.stageText.position.set(500, 0);
@@ -85,9 +88,7 @@ export class RenderSystem extends System {
     graphics.lineStyle(2, 0xff0000, 1);
 
     for (const entity of queries.sprites.results) {
-      const p = entity.getComponent(Position);
-      const sprite = entity.getComponent(SpriteResources);
-      this.syncSpritePosition(p, sprite);
+      this.syncSprite(entity);
     }
 
     for (const entity of queries.others.results) {
@@ -98,13 +99,16 @@ export class RenderSystem extends System {
 
   private handleGameState() {
     const gameState = this.getGameState();
+    const localPlayer = this.getLocalPlayer();
+    const player = localPlayer?.getComponent(Player);
+    const isCaptured = player?.isCaptured;
+    const isSeeker = player?.role === PlayerRole.SEEKER;
 
     this.stageText.text = gameState.stage;
 
     // Only show the countdown while in counting down
     if (gameState.stage === GameStage.COUNTING_DOWN) {
       this.countdownText.visible = true;
-
       const secs = Math.floor(gameState.countdown / 1000);
       this.countdownText.text = String(secs);
     } else {
@@ -112,13 +116,17 @@ export class RenderSystem extends System {
     }
 
     // Only use the visibility mask while the game is playing
-    if (gameState.stage === GameStage.PLAYING) {
+    // and the user has not yet be caught.
+    if (gameState.stage === GameStage.PLAYING && !isCaptured) {
       if (!this.visibilityMask.visible) {
         this.visibilityMask.visible = true;
         this.renderState.tilemap.mask = this.visibilityMask;
         this.spritesStage.mask = this.visibilityMask;
       }
       this.updateMask();
+    } else if (gameState.stage === GameStage.COUNTING_DOWN && isSeeker) {
+      this.renderState.tilemap.mask = this.hideEverythingMask;
+      this.spritesStage.mask = this.hideEverythingMask;
     } else {
       this.visibilityMask.visible = false;
       this.renderState.tilemap.mask = null;
@@ -165,13 +173,34 @@ export class RenderSystem extends System {
     }
   }
 
-  private syncSpritePosition(p: Position, s: SpriteResources) {
+  private syncSprite(entity: Entity) {
+    const p = entity.getComponent(Position);
+    const s = entity.getComponent(SpriteResources);
+    const player = entity.getComponent(Player);
+    const isLocalPlayer = entity.hasComponent(LocalPlayerControlled);
+
     s.sprite.x = p.x;
     s.sprite.y = p.y;
+
+    s.sprite.visible = !player.isCaptured || isLocalPlayer;
+
+    if (isLocalPlayer) {
+      s.sprite.alpha = player.isCaptured ? 0.3 : 1;
+    }
   }
 
   private getGameState(): GameState {
     const e = this.queries.gameState.results[0];
     return e.getComponent(GameState);
+  }
+
+  private getLocalPlayer(): Entity {
+    return this.queries.player.results[0];
+  }
+
+  private isLocalPlayerAGhost() {
+    const player = this.getLocalPlayer();
+    const p = player.getComponent(Player);
+    return p.isCaptured;
   }
 }

@@ -1,4 +1,4 @@
-import {System} from 'ecsy';
+import {System, Entity} from 'ecsy';
 import {
   GameState,
   GameStage,
@@ -6,6 +6,7 @@ import {
   Player,
   PlayerRole,
   randomInt,
+  Collides,
 } from 'lancer-shared';
 
 /**
@@ -17,7 +18,7 @@ export class GameplaySystem extends System {
     players: {components: [Player]},
   };
 
-  countdown = new CountDown({duration: 10 * 1000});
+  countdown = new CountDown({duration: 11 * 1000});
 
   execute(delta: number) {
     const state = this.getGameState(true);
@@ -39,19 +40,30 @@ export class GameplaySystem extends System {
   }
 
   executePlaying(delta: number) {
+    this.checkForSeekerCatchingHider();
+
     if (this.areAllHidersCaught()) {
-      this.setGameStage(GameStage.POST_GAME);
+      this.endGame();
+    }
+  }
+
+  checkForSeekerCatchingHider() {
+    const seeker = this.getSeeker();
+    if (!seeker) return;
+
+    const collides = seeker.getComponent(Collides);
+    for (const other of collides.colliding.values()) {
+      const p = other.getMutableComponent(Player);
+      const collides = other.getMutableComponent(Collides);
+
+      if (!p) continue;
+      p.isCaptured = true;
+      collides.disabled = true;
     }
   }
 
   setGameStage(stage: GameStage) {
-    console.log(`Set stage to ${stage}`);
     const state = this.getGameState(true);
-
-    if (stage === GameStage.COUNTING_DOWN) {
-      this.countdown.reset();
-    }
-
     state.stage = stage;
   }
 
@@ -65,7 +77,20 @@ export class GameplaySystem extends System {
       player.role = entity === newSeeker ? PlayerRole.SEEKER : PlayerRole.HIDER;
     }
 
+    this.countdown.reset();
     this.setGameStage(GameStage.COUNTING_DOWN);
+  }
+
+  endGame() {
+    const players = this.queries.players.results;
+    for (const entity of players) {
+      const player = entity.getMutableComponent(Player);
+      player.isCaptured = false;
+      const collides = entity.getMutableComponent(Collides);
+      collides.disabled = false;
+    }
+
+    this.setGameStage(GameStage.POST_GAME);
   }
 
   private areAllHidersCaught() {
@@ -87,5 +112,16 @@ export class GameplaySystem extends System {
     return mutable
       ? e.getMutableComponent(GameState)
       : e.getComponent(GameState);
+  }
+
+  private getSeeker(): Entity | undefined {
+    const players = this.queries.players.results;
+    for (const entity of players) {
+      const player = entity.getComponent(Player);
+      if (player.role === PlayerRole.SEEKER) {
+        return entity;
+      }
+    }
+    return undefined;
   }
 }

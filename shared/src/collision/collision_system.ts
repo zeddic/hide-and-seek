@@ -65,6 +65,10 @@ export class CollisionSystem extends System {
       const p1 = entity.getComponent(Position);
       const c1 = entity.getMutableComponent(Collides);
 
+      if (c1.disabled) {
+        continue;
+      }
+
       const others = this.query(p1);
       for (const other of others) {
         if (entity === other) {
@@ -73,6 +77,10 @@ export class CollisionSystem extends System {
 
         const p2 = other.getComponent(Position);
         const c2 = other.getComponent(Collides);
+
+        if (c2.disabled) {
+          continue;
+        }
 
         if (regionsCollide(p1, p2)) {
           c1.colliding.add(other);

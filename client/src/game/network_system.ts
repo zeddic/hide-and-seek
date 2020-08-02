@@ -134,7 +134,7 @@ export class NetworkSystem extends System {
       if (entity && entity !== this.playerEntity) {
         if (!entity.hasComponent(RemotePlayerControlled)) {
           entity.addComponent(RemotePlayerControlled);
-          entity.addComponent(Sprite, {image: Image.DINO2});
+          entity.addComponent(Sprite, {image: Image.DINO1});
         }
       }
 
@@ -142,6 +142,7 @@ export class NetworkSystem extends System {
       const m = entity?.getMutableComponent(Physics)!;
       const player = entity?.getMutableComponent(Player)!;
       const sprite = entity?.getComponent(Sprite)!;
+      const collides = entity?.getComponent(Collides)!;
 
       p.x = update.x;
       p.y = update.y;
@@ -167,6 +168,10 @@ export class NetworkSystem extends System {
       ) {
         const sprite = entity?.getMutableComponent(Sprite)!;
         sprite.image = Image.DINO2;
+      }
+
+      if (player && collides) {
+        collides.disabled = player.isCaptured;
       }
     }
 
