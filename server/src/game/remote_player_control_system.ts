@@ -1,7 +1,6 @@
 import {System} from 'ecsy';
+import {Physics, Player, updatePlayerForActions} from 'lancer-shared';
 import {RemotePlayerControlled} from './remote_player_controlled';
-import {Physics, Player, PlayerRole, getPlayerSpeed} from 'lancer-shared';
-import {HIDER_SPEED, SEEKER_SPEED} from 'lancer-shared/lib/constants';
 
 const MAX_INPUT_QUEUE_SIZE = 4;
 
@@ -21,8 +20,6 @@ export class RemotePlayerControlSystem extends System {
     for (const entity of entities) {
       const remote = entity.getMutableComponent(RemotePlayerControlled)!;
       const movement = entity.getMutableComponent(Physics);
-      const player = entity.getComponent(Player);
-
       movement.v.set(0, 0);
 
       // Only process at most 1 input per frame!
@@ -40,21 +37,7 @@ export class RemotePlayerControlSystem extends System {
       if (remote.inputQueue.length > 0) {
         const actionsState = remote.inputQueue.shift();
         const actions = actionsState.actions;
-        const isSneeking = !!actions.sneek;
-        const speed = getPlayerSpeed(player, {isSneeking});
-
-        if (actions.up) {
-          movement.v.addValues(0, -speed);
-        } else if (actions.down) {
-          movement.v.addValues(0, speed);
-        }
-
-        if (actions.left) {
-          movement.v.addValues(-speed, 0);
-        } else if (actions.right) {
-          movement.v.addValues(speed, 0);
-        }
-
+        updatePlayerForActions(entity, actions);
         remote.lastProcessedInput = actionsState.id;
       }
     }

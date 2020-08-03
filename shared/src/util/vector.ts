@@ -36,8 +36,32 @@ export class Vector {
     return this;
   }
 
+  public divideScalar(amount: number) {
+    if (amount === 0) {
+      this.x = 0;
+      this.y = 0;
+    } else {
+      var invScalar = 1 / amount;
+      this.x *= invScalar;
+      this.y *= invScalar;
+    }
+    return this;
+  }
+
   public dot(other: Vector) {
     return this.x * other.x + this.y * other.y;
+  }
+
+  public normalize() {
+    return this.divideScalar(this.length());
+  }
+
+  public truncate(max: number) {
+    if (this.lengthSq() > max * max) {
+      this.normalize().multiplyScalar(max);
+    }
+
+    return this;
   }
 
   public length() {

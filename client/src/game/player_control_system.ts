@@ -1,5 +1,5 @@
 import {System} from 'ecsy';
-import {getPlayerSpeed} from 'lancer-shared';
+import {updatePlayerForActions} from 'lancer-shared';
 import {ActionActiveMap} from 'lancer-shared/lib/actions';
 import {Physics, Player} from 'lancer-shared/lib/components';
 import {ActionState} from './action_system';
@@ -32,24 +32,7 @@ export class PlayerControlSystem extends System {
 
     const entities = this.getLocalControlledEntities();
     for (const entity of entities) {
-      const movement = entity.getMutableComponent(Physics);
-      const player = entity.getComponent(Player);
-      const isSneeking = !!actions.sneek;
-      const speed = getPlayerSpeed(player, {isSneeking});
-
-      movement.v.set(0, 0);
-
-      if (actions.up) {
-        movement.v.addValues(0, -speed);
-      } else if (actions.down) {
-        movement.v.addValues(0, speed);
-      }
-
-      if (actions.left) {
-        movement.v.addValues(-speed, 0);
-      } else if (actions.right) {
-        movement.v.addValues(speed, 0);
-      }
+      updatePlayerForActions(entity, actions);
     }
   }
 

@@ -1,17 +1,15 @@
-import {System, Entity} from 'ecsy';
+import {Entity, System} from 'ecsy';
 import {
+  GameStage,
+  GameState,
+  getPlayerSpeed,
+  Physics,
   Player,
   Position,
-  Physics,
-  PlayerRole,
-  SEEKER_SPEED,
-  HIDER_SPEED,
-  GameState,
-  GameStage,
 } from 'lancer-shared';
 import {Footprint} from './footprint';
 
-const TIME_BETWEEN_FOOTPRINT_SPAWNS_MS = 100;
+const TIME_BETWEEN_FOOTPRINT_SPAWNS_MS = 1000;
 const LIFE_OF_FOOTPRINT_MS = 2000;
 
 /**
@@ -47,7 +45,6 @@ export class FootprintSystem extends System {
       const footprint = entity.getComponent(Footprint);
       footprint.life -= delta;
       if (footprint.life <= 0) {
-        console.log('deswpan');
         entity.remove();
       }
     }
@@ -85,10 +82,9 @@ export class FootprintSystem extends System {
   isMovingTooFast(entity: Entity) {
     const physics = entity.getComponent(Physics);
     const player = entity.getComponent(Player);
-    const normalSpeed =
-      player.role === PlayerRole.SEEKER ? SEEKER_SPEED : HIDER_SPEED;
+    const sneekSpeed = getPlayerSpeed(player, {isSneeking: false});
 
-    const maxSpeed = normalSpeed;
+    const maxSpeed = sneekSpeed * 1.01;
     const maxSpeedSq = maxSpeed * maxSpeed;
 
     return physics.v.lengthSq() >= maxSpeedSq;
