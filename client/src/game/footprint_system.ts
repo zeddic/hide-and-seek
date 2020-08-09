@@ -42,7 +42,7 @@ export class FootprintSystem extends System {
 
     // Despawn footprints when they get too old.
     for (const entity of this.queries.footprints.results) {
-      const footprint = entity.getComponent(Footprint);
+      const footprint = entity.getMutableComponent(Footprint);
       footprint.life -= delta;
       if (footprint.life <= 0) {
         entity.remove();

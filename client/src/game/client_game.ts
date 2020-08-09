@@ -4,7 +4,7 @@ import {Position, Physics} from 'lancer-shared/lib/components';
 import {WorldBoundsSystem} from 'lancer-shared/lib/world_bounds_system';
 import * as PIXI from 'pixi.js';
 import Stats from 'stats.js';
-import {ActionSystem} from './action_system';
+import {ActionSystem, ActionState} from './action_system';
 import {NetworkSystem} from './network_system';
 import {InputSystem} from './input_system';
 import {LocalPlayerControlled} from './local_player_controlled';
@@ -26,6 +26,8 @@ import {
 import {RenderState} from './render_state';
 import {Footprint} from './footprint';
 import {FootprintSystem} from './footprint_system';
+import {TileMapState} from 'lancer-shared/lib/tiles/tile_map_state';
+import {NetworkState} from './network_state';
 
 /**
  * The number of milliseconds that should be simulated in each update
@@ -93,6 +95,9 @@ export class ClientGame {
         .registerComponent(Position)
         .registerComponent(Physics)
         .registerComponent(Collides, false)
+        .registerComponent(TileMapState)
+        .registerComponent(ActionState, false)
+        .registerComponent(NetworkState, false)
         .registerComponent(LocalPlayerControlled)
         .registerComponent(RemotePlayerControlled)
         .registerComponent(Sprite)

@@ -43,12 +43,12 @@ export class ActionSystem extends System {
   actionIdGen = 0;
 
   init() {
-    this.world.registerComponent(ActionState, false);
     this.world.createEntity().addComponent(ActionState);
   }
 
   execute() {
-    const actionEntity = this.queries.action.results[0];
+    const actionEntity = this.queries.action.results[0]!;
+    actionEntity.getComponent(ActionState);
     const actionStateComponent = actionEntity.getMutableComponent(ActionState);
 
     actionStateComponent.current = this.createActionSnapshot();

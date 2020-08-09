@@ -34,7 +34,6 @@ export class NetworkSystem extends System {
   }
 
   init() {
-    this.world.registerComponent(NetworkState, false);
     this.world.createEntity().addComponent(NetworkState);
     this.initSocket();
   }
@@ -142,7 +141,7 @@ export class NetworkSystem extends System {
       const m = entity?.getMutableComponent(Physics)!;
       const player = entity?.getMutableComponent(Player)!;
       const sprite = entity?.getComponent(Sprite)!;
-      const collides = entity?.getComponent(Collides)!;
+      const collides = entity?.getMutableComponent(Collides)!;
 
       p.x = update.x;
       p.y = update.y;

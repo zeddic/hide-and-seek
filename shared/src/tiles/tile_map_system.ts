@@ -16,7 +16,6 @@ export class TileMapSystem extends System {
 
   init() {
     const map = new TileMap(this.options);
-    this.world.registerComponent(TileMapState);
     this.world.createEntity().addComponent(TileMapState, {map});
   }
 

@@ -14,8 +14,8 @@ export class WorldBoundsSystem extends System {
 
   execute(delta: number, time: number) {
     for (const entity of this.queries.movable.results) {
-      const p = entity.getComponent(Position);
-      const m = entity.getComponent(Physics);
+      const p = entity.getMutableComponent(Position);
+      const m = entity.getMutableComponent(Physics);
 
       if (p.x < 0) {
         p.x = 0;

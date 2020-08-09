@@ -14,8 +14,8 @@ export class PhysicsSystem extends System {
   updateEntities(delta: number, time: number, entities: Entity[]) {
     // Euler implicit integration
     for (const entity of entities) {
-      const p = entity.getComponent(Position);
-      const m = entity.getComponent(Physics);
+      const p = entity.getMutableComponent(Position);
+      const m = entity.getMutableComponent(Physics);
 
       // Update velocity
       m.v.x += m.a.x * delta;
