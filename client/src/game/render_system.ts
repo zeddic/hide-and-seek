@@ -102,7 +102,7 @@ export class RenderSystem extends System {
     }
 
     for (const entity of queries.footprints.results) {
-      this.renderFootprint(entity);
+      // this.renderFootprint(entity);
     }
   }
 

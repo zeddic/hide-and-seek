@@ -62,6 +62,7 @@ export class FootprintSystem extends System {
   }
 
   spawnFootprint(entity: Entity) {
+    console.log('spawn!');
     const now = performance.now();
     this.lastSpawnTimeByEntity.set(entity, now);
 
@@ -82,7 +83,7 @@ export class FootprintSystem extends System {
   isMovingTooFast(entity: Entity) {
     const physics = entity.getComponent(Physics);
     const player = entity.getComponent(Player);
-    const sneekSpeed = getPlayerSpeed(player, {isSneeking: false});
+    const sneekSpeed = getPlayerSpeed(player, {isSneeking: true});
 
     const maxSpeed = sneekSpeed * 1.01;
     const maxSpeedSq = maxSpeed * maxSpeed;
