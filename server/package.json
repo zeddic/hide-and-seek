@@ -21,7 +21,7 @@
     "lancer-shared": "1.0.0",
     "rxjs": "^6.6.0",
     "shelljs": "^0.8.4",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "typescript": "^3.9.6"
   },
   "devDependencies": {
