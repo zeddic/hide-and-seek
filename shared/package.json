@@ -6,7 +6,7 @@
   "dependencies": {
     "@types/lodash": "^4.14.158",
     "ecsy": "^0.3.2",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "typescript": "^3.9.6"
   },
   "scripts": {
