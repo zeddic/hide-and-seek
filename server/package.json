@@ -20,7 +20,7 @@
     "github-webhook-handler": "^1.0.0",
     "lancer-shared": "1.0.0",
     "rxjs": "^6.6.0",
-    "shelljs": "^0.8.4",
+    "shelljs": "^0.8.5",
     "socket.io": "^2.3.0",
     "typescript": "^3.9.6"
   },
